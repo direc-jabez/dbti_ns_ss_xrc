@@ -1,0 +1,272 @@
+<?xml version="1.0"?>
+<!DOCTYPE pdf PUBLIC "-//big.faceless.org//report" "report-1.1.dtd">
+<pdf>
+
+    <head>
+        <link name="NotoSans" type="font" subtype="truetype" src="${nsfont.NotoSans_Regular}"
+            src-bold="${nsfont.NotoSans_Bold}" src-italic="${nsfont.NotoSans_Italic}"
+            src-bolditalic="${nsfont.NotoSans_BoldItalic}" bytes="2" />
+        <#if .locale=="zh_CN">
+            <link name="NotoSansCJKsc" type="font" subtype="opentype" src="${nsfont.NotoSansCJKsc_Regular}"
+                src-bold="${nsfont.NotoSansCJKsc_Bold}" bytes="2" />
+            <#elseif .locale=="zh_TW">
+                <link name="NotoSansCJKtc" type="font" subtype="opentype" src="${nsfont.NotoSansCJKtc_Regular}"
+                    src-bold="${nsfont.NotoSansCJKtc_Bold}" bytes="2" />
+                <#elseif .locale=="ja_JP">
+                    <link name="NotoSansCJKjp" type="font" subtype="opentype" src="${nsfont.NotoSansCJKjp_Regular}"
+                        src-bold="${nsfont.NotoSansCJKjp_Bold}" bytes="2" />
+                    <#elseif .locale=="ko_KR">
+                        <link name="NotoSansCJKkr" type="font" subtype="opentype" src="${nsfont.NotoSansCJKkr_Regular}"
+                            src-bold="${nsfont.NotoSansCJKkr_Bold}" bytes="2" />
+                        <#elseif .locale=="th_TH">
+                            <link name="NotoSansThai" type="font" subtype="opentype"
+                                src="${nsfont.NotoSansThai_Regular}" src-bold="${nsfont.NotoSansThai_Bold}" bytes="2" />
+        </#if>
+        <macrolist>
+            <macro id="nlfooter">
+                <table class="footer" style="width: 100%;">
+                    <tr>
+                        <td align="right">
+                            <pagenumber /> of
+                            <totalpages />
+                        </td>
+                    </tr>
+                </table>
+            </macro>
+        </macrolist>
+        <style>
+            * {
+                <#if .locale=="zh_CN">font-family: NotoSans, NotoSansCJKsc, sans-serif;
+                <#elseif .locale=="zh_TW">font-family: NotoSans, NotoSansCJKtc, sans-serif;
+                <#elseif .locale=="ja_JP">font-family: NotoSans, NotoSansCJKjp, sans-serif;
+                <#elseif .locale=="ko_KR">font-family: NotoSans, NotoSansCJKkr, sans-serif;
+                <#elseif .locale=="th_TH">font-family: NotoSans, NotoSansThai, sans-serif;
+                <#else>font-family: NotoSans, sans-serif;
+                </#if>
+            }
+
+            table {
+                font-size: 9pt;
+                table-layout: fixed;
+            }
+
+            th {
+                font-weight: bold;
+                font-size: 8pt;
+                vertical-align: middle;
+                padding: 5px 6px 3px;
+                background-color: #e3e3e3;
+                color: #333333;
+            }
+
+            td {
+                padding: 4px 6px;
+            }
+
+            td p {
+                align: left
+            }
+
+            b {
+                font-weight: bold;
+                color: #333333;
+            }
+
+            table.header td {
+                padding: 0;
+                font-size: 10pt;
+            }
+
+            table.footer td {
+                padding: 0;
+                font-size: 8pt;
+            }
+
+            table.itemtable th {
+                padding-bottom: 10px;
+                padding-top: 10px;
+            }
+
+            table.body td {
+                padding-top: 2px;
+            }
+
+            table.total {
+                page-break-inside: avoid;
+            }
+
+            tr.totalrow {
+                background-color: #e3e3e3;
+                line-height: 200%;
+            }
+
+            td.totalboxtop {
+                font-size: 12pt;
+                background-color: #e3e3e3;
+            }
+
+            td.addressheader {
+                font-size: 8pt;
+                padding-top: 6px;
+                padding-bottom: 2px;
+            }
+
+            td.address {
+                padding-top: 0;
+            }
+
+            td.totalboxmid {
+                font-size: 28pt;
+                padding-top: 20px;
+                background-color: #e3e3e3;
+            }
+
+            td.totalboxbot {
+                background-color: #e3e3e3;
+                font-weight: bold;
+            }
+
+            span.title {
+                font-size: 28pt;
+            }
+
+            span.number {
+                font-size: 16pt;
+            }
+
+            span.itemname {
+                font-weight: bold;
+                line-height: 150%;
+            }
+
+            hr {
+                width: 100%;
+                color: #d3d3d3;
+                background-color: #d3d3d3;
+                height: 1px;
+            }
+
+            .border_t {
+                border-top: 1px solid black;
+            }
+
+            .border_t2 {
+                border-top: 2px solid black;
+            }
+
+
+            .border_r {
+                border-right: 1px solid black;
+            }
+
+            .border_b {
+                border-bottom: 1px solid black;
+            }
+
+            .border_rb {
+                border-right: 1px solid black;
+                border-bottom: 1px solid black;
+
+            }
+        </style>
+    </head>
+
+    <body header="nlheader" header-height="10%" footer="nlfooter" footer-height="20pt" padding="0.5in 0.5in 0.5in 0.5in"
+        size="Letter">
+        <table style="width: 100%;">
+            <tr>
+                <td>
+                    <#if companyInformation.logoUrl?length !=0>
+                        <img src="${companyInformation.logoUrl}" style="width: 300px; height: 70px;" />
+                    </#if>
+                </td>
+            </tr>
+            <tr>
+                <td align="center" style="font-size: 18px;">MATERIALS/SERVICE REQUEST FORM</td>
+            </tr>
+        </table>
+        <table style="width: 100%;">
+            <tr>
+                <td colspan="3">Mall/Project:</td>
+                <td colspan="10" style="border-bottom: 1px solid black;"></td>
+                <td align="right" colspan="5">DATE:</td>
+                <td colspan="6" style="border-bottom: 1px solid black;">${record.trandate}</td>
+            </tr>
+            <tr>
+                <td colspan="3">Purpose:</td>
+                <td colspan="10" style="border-bottom: 1px solid black;">${record.memo}</td>
+                <td align="right" colspan="5" style="color: red;">REMARKS:</td>
+                <td colspan="6" style="border-bottom: 1px solid black;"></td>
+            </tr>
+            <tr>
+                <td>&nbsp;</td>
+            </tr>
+            <tr>
+                <td colspan="12"></td>
+                <td align="center" colspan="4">SUPPLIER:</td>
+                <td colspan="8"></td>
+            </tr>
+        </table>
+        <#if record.item?has_content>
+            <table style="width: 100%; border: 1px solid black;">
+                <tr>
+                    <td class="border_rb" colspan="2" align="center">QTY</td>
+                    <td class="border_rb" colspan="2">UNIT</td>
+                    <td class="border_rb" colspan="8">DESCRIPTION/ITEMS</td>
+                    <td class="border_rb" colspan="4" align="right">&nbsp;</td>
+                    <td class="border_rb" colspan="4" align="right">&nbsp;</td>
+                    <td class="border_b" colspan="4" align="right">&nbsp;</td>
+                </tr>
+                <#list record.item as item>
+                    <tr>
+                        <td class="border_rb" colspan="2" align="center">${item.quantity}</td>
+                        <td class="border_rb" colspan="2">${item.units}</td>
+                        <td class="border_rb" colspan="8"><span>${item.item}</span><br />${item.description}</td>
+                        <td class="border_rb" colspan="4" align="right">&nbsp;</td>
+                        <td class="border_rb" colspan="4" align="right">&nbsp;</td>
+                        <td class="border_b" colspan="4" align="right">&nbsp;</td>
+                    </tr>
+                </#list>
+                <tr>
+                    <td class="border_rb" colspan="2" align="center">&nbsp;</td>
+                    <td class="border_rb" colspan="2">&nbsp;</td>
+                    <td class="border_rb" colspan="8">&nbsp;</td>
+                    <td class="border_rb" colspan="4" align="right">&nbsp;</td>
+                    <td class="border_rb" colspan="4" align="right">&nbsp;</td>
+                    <td class="border_b" colspan="4" align="right">&nbsp;</td>
+                </tr>
+                <tr>
+                    <td class="border_r" colspan="2" align="center">&nbsp;</td>
+                    <td class="border_r" colspan="2">&nbsp;</td>
+                    <td class="border_r" colspan="8">&nbsp;</td>
+                    <td class="border_r" colspan="4" align="right">&nbsp;</td>
+                    <td class="border_r" colspan="4" align="right">&nbsp;</td>
+                    <td colspan="4" align="right">&nbsp;</td>
+                </tr>
+            </table>
+        </#if>
+        <table style="margin-top: 10px; width: 100%;">
+            <tr>
+                <td colspan="6">Requested By:</td>
+                <td colspan="6">Endorsed By:</td>
+                <td colspan="6">Checked By:</td>
+                <td colspan="6">Approved By:</td>
+            </tr>
+            <tr>
+                <td>&nbsp;</td>
+            </tr>
+            <tr>
+                <td colspan="6">${record.employee?keep_after(" ")}</td>
+                <td colspan="6">${record.custbody_xrc_noted_by?keep_after(" ")}</td>
+                <td colspan="6">${record.custbody_xrc_checked_by?keep_after(" ")}</td>
+                <td colspan="6">${record.nextapprover?keep_after(" ")}</td>
+            </tr>
+            <tr>
+                <td class="border_t2" colspan="6">Employee</td>
+                <td class="border_t2" colspan="6">Division Head</td>
+                <td class="border_t2" colspan="6">IPB</td>
+                <td class="border_t2" colspan="6">XRC/AMC</td>
+            </tr>
+        </table>
+    </body>
+</pdf>

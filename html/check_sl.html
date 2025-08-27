@@ -1,0 +1,140 @@
+<?xml version="1.0"?>
+<!DOCTYPE pdf PUBLIC "-//big.faceless.org//report" "report-1.1.dtd">
+<pdf>
+
+    <head>
+      
+         <link name="NotoSans" type="font" subtype="truetype" src="${nsfont.NotoSans_Regular}"
+            src-bold="${nsfont.NotoSans_Bold}" src-italic="${nsfont.NotoSans_Italic}"
+            src-bolditalic="${nsfont.NotoSans_BoldItalic}" bytes="2" />
+        <#if .locale=="zh_CN">
+            <link name="NotoSansCJKsc" type="font" subtype="opentype" src="${nsfont.NotoSansCJKsc_Regular}"
+                src-bold="${nsfont.NotoSansCJKsc_Bold}" bytes="2" />
+            <#elseif .locale=="zh_TW">
+                <link name="NotoSansCJKtc" type="font" subtype="opentype" src="${nsfont.NotoSansCJKtc_Regular}"
+                    src-bold="${nsfont.NotoSansCJKtc_Bold}" bytes="2" />
+                <#elseif .locale=="ja_JP">
+                    <link name="NotoSansCJKjp" type="font" subtype="opentype" src="${nsfont.NotoSansCJKjp_Regular}"
+                        src-bold="${nsfont.NotoSansCJKjp_Bold}" bytes="2" />
+                    <#elseif .locale=="ko_KR">
+                        <link name="NotoSansCJKkr" type="font" subtype="opentype" src="${nsfont.NotoSansCJKkr_Regular}"
+                            src-bold="${nsfont.NotoSansCJKkr_Bold}" bytes="2" />
+                        <#elseif .locale=="th_TH">
+                            <link name="NotoSansThai" type="font" subtype="opentype"
+                                src="${nsfont.NotoSansThai_Regular}" src-bold="${nsfont.NotoSansThai_Bold}" bytes="2" />
+        </#if>
+        <style>
+            * {
+                <#if .locale=="zh_CN">font-family: NotoSans, NotoSansCJKsc, sans-serif;
+                <#elseif .locale=="zh_TW">font-family: NotoSans, NotoSansCJKtc, sans-serif;
+                <#elseif .locale=="ja_JP">font-family: NotoSans, NotoSansCJKjp, sans-serif;
+                <#elseif .locale=="ko_KR">font-family: NotoSans, NotoSansCJKkr, sans-serif;
+                <#elseif .locale=="th_TH">font-family: NotoSans, NotoSansThai, sans-serif;
+                <#else>font-family: NotoSans, sans-serif;
+                </#if>
+            }
+
+            .check table {
+                position: relative;
+                overflow: hidden;
+                font-size: 8pt;
+            }
+
+            td p {
+                align: left
+            }
+        </style>
+    </head>
+
+    <body padding="0.02in 0.5in 0.5in 0.5in" size="Letter">
+
+        <div
+            style="position: relative;font-family: Helvetica,sans-serif;top= -11pt;height: 250pt;width: 612pt;page-break-inside: avoid;font-size: 8pt;">
+            <table
+                style="position: absolute;overflow: hidden;left: 316pt;top: 15pt;height: 18pt;width: 100%; font-size: 11px;">
+                <tr>
+                <!-- Date  -->
+                    <#assign dateElements=record.trandate?split("/") />
+                    <td>
+                        <span style="margin-right: 7px;">${dateElements[0]?split("")[0]}</span>
+                        <span style="margin-right: 12px;">${dateElements[0]?split("")[1]}</span>
+                        <span style="margin-right: 7px;">${dateElements[1]?split("")[0]}</span>
+                        <span style="margin-right: 12px;">${dateElements[1]?split("")[1]}</span>
+                        <span style="margin-right: 7px;">${dateElements[2]?split("")[0]}</span>
+                        <span style="margin-right: 5px;">${dateElements[2]?split("")[1]}</span>
+                        <span style="margin-right: 5px;">${dateElements[2]?split("")[2]}</span>
+                        <span style="margin-right: 7px;">${dateElements[2]?split("")[3]}</span>
+                    </td>
+                </tr>
+            </table>
+            <table
+                style="position: absolute;overflow: hidden;left: -15pt;top: 46pt;height: 18pt;width: 393pt; font-size: 11px;">
+                <tr>
+                    <td>
+                    <!-- Name Spelled capitalized  -->
+                        <#if record.type=='custrfnd'>
+                            ${record.customer.custentity_xrc_legal_name?upper_case}
+                            <#elseif record.type=="vendpymt" || record.type=="vprep" || record.type=="check">
+                                <#if record.entity.isperson>
+                                    ${record.entity?keep_after(" ")?upper_case}
+                                    <#else>
+                                    <#if record.entity.legalname?has_content>
+                                            ${record.entity.legalname}
+                                        <#else>
+                                            <#if record.custbody_xrc_name_on_check?has_content>
+                                                ${record.custbody_xrc_name_on_check}
+                                                <#else>
+                                                    <#if record.custbody_xrc_check_payee_name?has_content>
+                                                        ${record.custbody_xrc_check_payee_name?keep_after(" ")}
+                                                        <#else>
+                                                            ${record.entity?keep_after(" ")}
+                                                    </#if>
+                                            </#if>
+                                    </#if>
+                                </#if>
+                        </#if>
+                        <#if record.entity.isperson?contains("ERROR")>
+                           <#if record.custbody_xrc_check_payee_name?has_content>
+                                ${record.custbody_xrc_check_payee_name?keep_after(" ")}
+                                <#else>
+                                    ${record.entity?keep_after(" ")}
+                            </#if>
+                        </#if>
+                    </td>
+                </tr>
+            </table>
+            <table
+                style="position: absolute;overflow: hidden;left: 360pt;top: 46pt;height: 18pt;width: 111pt; font-size: 11px;">
+                <tr>
+                    <td>
+                    <!-- Peso in numbers -->
+                        <#if record.type=='check'>
+                            ${record.usertotal?keep_after("PHP")}
+                            <#elseif record.type=='vendpymt' || record.type=='custrfnd'>
+                                ${record.total?keep_after("PHP")}
+                                <#elseif record.type=='vprep'>
+                                    ${record.payment?keep_after("PHP")}
+                        </#if>
+                    </td>
+                </tr>
+            </table>
+            <!-- Pesos In Word -->
+            <table
+                style="position: absolute;overflow: hidden;left: -15pt;top: 66pt;height: 18pt;width: 572pt; font-size: 11px;">
+                <tr>
+                    <td>
+                        <#if record.type=='vprep'>
+                            <#assign amount_in_words=""/>
+                            <#assign _getAmountInWordsSuiteletURL = "https://9794098.extforms.netsuite.com/app/site/hosting/scriptlet.nl?script=1810&deploy=1&compid=9794098&ns-at=AAEJ7tMQvtqcyPZDWm0uEltZG7fLjLuVVrEGpqxCEeCZQCRgZ7s&amount=" + record.payment?keep_after("PHP")>
+                            <#include _getAmountInWordsSuiteletURL />
+                            ${amount_in_words?upper_case}
+                            <#else>
+                                ${record.totalwords?keep_before(" and ")?upper_case} PESOS and ${record.totalwords?keep_after(" and ")?upper_case} ONLY
+                        </#if>
+                    </td>
+                </tr>
+            </table>
+        </div>
+
+    </body>
+</pdf>

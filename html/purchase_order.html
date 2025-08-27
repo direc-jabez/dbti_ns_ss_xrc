@@ -1,0 +1,572 @@
+<?xml version="1.0"?>
+<!DOCTYPE pdf PUBLIC "-//big.faceless.org//report" "report-1.1.dtd">
+<pdf>
+
+    <head>
+        <link name="NotoSans" type="font" subtype="truetype" src="${nsfont.NotoSans_Regular}"
+            src-bold="${nsfont.NotoSans_Bold}" src-italic="${nsfont.NotoSans_Italic}"
+            src-bolditalic="${nsfont.NotoSans_BoldItalic}" bytes="2" />
+        <#if .locale=="zh_CN">
+            <link name="NotoSansCJKsc" type="font" subtype="opentype" src="${nsfont.NotoSansCJKsc_Regular}"
+                src-bold="${nsfont.NotoSansCJKsc_Bold}" bytes="2" />
+            <#elseif .locale=="zh_TW">
+                <link name="NotoSansCJKtc" type="font" subtype="opentype" src="${nsfont.NotoSansCJKtc_Regular}"
+                    src-bold="${nsfont.NotoSansCJKtc_Bold}" bytes="2" />
+                <#elseif .locale=="ja_JP">
+                    <link name="NotoSansCJKjp" type="font" subtype="opentype" src="${nsfont.NotoSansCJKjp_Regular}"
+                        src-bold="${nsfont.NotoSansCJKjp_Bold}" bytes="2" />
+                    <#elseif .locale=="ko_KR">
+                        <link name="NotoSansCJKkr" type="font" subtype="opentype" src="${nsfont.NotoSansCJKkr_Regular}"
+                            src-bold="${nsfont.NotoSansCJKkr_Bold}" bytes="2" />
+                        <#elseif .locale=="th_TH">
+                            <link name="NotoSansThai" type="font" subtype="opentype"
+                                src="${nsfont.NotoSansThai_Regular}" src-bold="${nsfont.NotoSansThai_Bold}" bytes="2" />
+        </#if>
+        <macrolist>
+            <macro id="nlfooter">
+                <table class="footer" style="width: 100%;">
+                    <tr>
+                        <td>
+                            <barcode codetype="code128" showtext="true" value="${record.tranid}" />
+                        </td>
+                        <td align="right">
+                            <pagenumber /> of
+                            <totalpages />
+                        </td>
+                    </tr>
+                </table>
+            </macro>
+        </macrolist>
+        <style>
+            * {
+                <#if .locale=="zh_CN">font-family: NotoSans, NotoSansCJKsc, sans-serif;
+                <#elseif .locale=="zh_TW">font-family: NotoSans, NotoSansCJKtc, sans-serif;
+                <#elseif .locale=="ja_JP">font-family: NotoSans, NotoSansCJKjp, sans-serif;
+                <#elseif .locale=="ko_KR">font-family: NotoSans, NotoSansCJKkr, sans-serif;
+                <#elseif .locale=="th_TH">font-family: NotoSans, NotoSansThai, sans-serif;
+                <#else>font-family: NotoSans, sans-serif;
+                </#if>
+            }
+
+            table {
+                font-size: 9pt;
+                table-layout: fixed;
+            }
+
+            th {
+                font-weight: bold;
+                font-size: 8pt;
+                vertical-align: middle;
+                padding: 5px 6px 3px;
+                background-color: #e3e3e3;
+                color: #333333;
+            }
+
+            td {
+                padding: 4px 6px;
+            }
+
+            td p {
+                align: left
+            }
+
+            b {
+                font-weight: bold;
+                color: #333333;
+            }
+
+            table.header td {
+                padding: 0;
+                font-size: 10pt;
+            }
+
+            table.footer td {
+                padding: 0;
+                font-size: 8pt;
+            }
+
+            table.itemtable th {
+                padding-bottom: 10px;
+                padding-top: 10px;
+            }
+
+            table.body td {
+                padding-top: 2px;
+            }
+
+            table.total {
+                page-break-inside: avoid;
+            }
+
+            tr.totalrow {
+                background-color: #e3e3e3;
+                line-height: 200%;
+            }
+
+            td.totalboxtop {
+                font-size: 12pt;
+                background-color: #e3e3e3;
+            }
+
+            td.addressheader {
+                font-size: 8pt;
+                padding-top: 6px;
+                padding-bottom: 2px;
+            }
+
+            td.address {
+                padding-top: 0;
+            }
+
+            td.totalboxmid {
+                font-size: 28pt;
+                padding-top: 20px;
+                background-color: #e3e3e3;
+            }
+
+            td.totalboxbot {
+                background-color: #e3e3e3;
+                font-weight: bold;
+            }
+
+            span.title {
+                font-size: 28pt;
+            }
+
+            span.number {
+                font-size: 16pt;
+            }
+
+            span.itemname {
+                font-weight: bold;
+                line-height: 150%;
+            }
+
+            hr {
+                width: 100%;
+                color: #d3d3d3;
+                background-color: #d3d3d3;
+                height: 1px;
+            }
+
+            .border_r {
+                border-right: 1px solid black;
+            }
+
+            .border_l {
+                border-left: 1px solid black;
+            }
+
+            .border_rl {
+                border-right: 1px solid black;
+                border-left: 1px solid black;
+            }
+
+
+            .border_b {
+                border-bottom: 1px solid black;
+            }
+
+            .border_rb {
+                border-right: 1px solid black;
+                border-bottom: 1px solid black;
+            }
+
+            .border_rbl {
+                border-right: 1px solid black;
+                border-bottom: 1px solid black;
+                border-left: 1px solid black;
+            }
+        </style>
+    </head>
+
+    <body header="nlheader" header-height="10%" footer="nlfooter" footer-height="20pt" padding="0.3in 0.3in 0.3in 0.3in" size="Letter">
+        <#assign vendor_address='' />
+        <#assign is_requestor ='' />
+        <#assign _getVendorDetails="https://9794098.extforms.netsuite.com/app/site/hosting/scriptlet.nl?script=1925&deploy=1&compid=9794098&ns-at=AAEJ7tMQJAfR2pwnMRoWifscwEl21mZngUSWXqRftAQWCjj4848&vendor_id="+ record.entity.id />
+        <#include _getVendorDetails />
+        <#assign _suiteletGetEmployeeDetailsURL = "https://9794098.extforms.netsuite.com/app/site/hosting/scriptlet.nl?script=1762&deploy=1&compid=9794098&ns-at=AAEJ7tMQ2YU00TbghStVLvzThv5eD1l2osm-7iNUmxAC_ZBQ4Eg&emp_ids=" + record.custbody_xrc_prepared_by.id>
+        <#include _suiteletGetEmployeeDetailsURL />
+            <table style="width: 100%; padding: 0; border: 1px solid black;">
+                <tr>
+                    <td colspan="6" rowspan="4">
+                        <#if companyInformation.logoUrl?length !=0>
+                            <img src="${companyInformation.logoUrl}" style="width: 300px; height: 70px;" />
+                        </#if>
+                    </td>
+                    <td colspan="6" align="center"
+                        style="vertical-align: middle; padding: 0; background-color: rgb(255, 242, 225); border-bottom: 1px solid black; border-left: 1px solid black;">
+                        <strong>PURCHASE ORDER NO: ${record.tranid}</strong>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="6"></td>
+                </tr>
+                <tr>
+                    <td colspan="6"></td>
+                </tr>
+                <tr>
+                    <td colspan="6"></td>
+                </tr>
+                <tr>
+                    <td colspan="12" style="font-size: 9px;">
+                        <strong>${companyInformation.addressText?html?replace("<br />"?html, " ")}</strong>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="6" style="font-size: 9px;">
+                        <strong>TELEFAX: 933-8419/570-3160 TIN NO. 007-730-804</strong>
+                    </td>
+                    <td colspan="6" align="center" style="font-size: 11px;">
+                        <strong>PO DATE: ${record.trandate?string.long?upper_case}</strong>
+                    </td>
+                </tr>
+            </table>
+            <table
+                style="width: 100%; border-right: 1px solid black; border-bottom: 1px solid black; border-left: 1px solid black;">
+                <tr>
+                    <td class="border_rb" colspan="3" style="font-size: 10px; vertical-align: bottom;">
+                        <strong>SUPPLIER:</strong>
+                    </td>
+                    <td class="border_rb" colspan="9" align="center"
+                        style="font-size: 14px; background-color: rgb(255, 242, 225);">
+                        <strong>
+                            <#if record.entity.isperson>
+                                <#if record.entity.companyname?has_content>
+                                    ${record.entity.companyname}
+                                    <#else>
+                                        ${record.entity.legalname}
+                                </#if>
+                                <#else>
+                                    ${record.entity.legalname}
+                            </#if>
+                        </strong>
+                    </td>
+                    <td class="border_rb" colspan="5" style="font-size: 10px; vertical-align: bottom;"><strong>DELIVERY
+                            DETAILS:</strong>
+                    </td>
+                    <td class="border_b" colspan="7" style="font-size: 10px;">
+                        <strong>${record.custbody_xrc_delivery_details}</strong>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="border_rb" colspan="3" style="font-size: 10px;"><strong>ADDRESS:</strong></td>
+                    <td class="border_rb" colspan="9" style="font-size: 9px;"><strong>${vendor_address?html}</strong></td>
+                    <td class="border_rb" colspan="5" style="font-size: 10px;"><strong>EXPECTED DELIVERY DATE:</strong>
+                    </td>
+                    <td class="border_b" colspan="7" style="font-size: 10px;"><strong>${record.duedate}</strong></td>
+                </tr>
+                <tr>
+                    <td class="border_rb" colspan="3" style="font-size: 10px;"><strong>VAT REG TIN:</strong></td>
+                    <td class="border_rb" colspan="9" style="font-size: 9px;"><strong>${record.vatregnum}</strong></td>
+                    <td class="border_rb" colspan="5" style="font-size: 10px;"><strong>ADDRESS:</strong></td>
+                    <td class="border_b" colspan="7" style="font-size: 10px; background-color: rgb(255, 242, 225);">
+                        <strong>${record.shipaddress?html?replace("<br />"?html, " ")}</strong>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="border_rb" colspan="3" style="font-size: 10px;"><strong>CONTACT:</strong></td>
+                    <td class="border_rb" colspan="9" style="font-size: 9px;">
+                        <strong>${record.custbody_xrc_contact_no?replace('+63', '0')}</strong>
+                    </td>
+                    <td class="border_rb" colspan="5" style="font-size: 10px;"><strong>CONTACT PERSON:</strong></td>
+                    <td class="border_b" colspan="7" style="font-size: 10px;">
+                        <strong>${record.custbody_xrc_prepared_by?keep_after(" ")}</strong>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="border_rb" colspan="3" style="font-size: 10px;"><strong>TEL NO:</strong></td>
+                    <td class="border_rb" colspan="9" style="font-size: 9px;">
+                        <strong>${record.custbody_xrc_tel_no}</strong>
+                    </td>
+                    <td class="border_rb" colspan="5" style="font-size: 10px;"><strong>REMARKS:</strong></td>
+                    <td class="border_b" colspan="7" style="font-size: 10px; background-color: rgb(255, 242, 225);">
+                        <strong>${record.memo}</strong>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="border_rb" colspan="3" style="font-size: 10px;"><strong>FAX NO:</strong></td>
+                    <td class="border_rb" colspan="9" style="font-size: 9px;">
+                        <strong>${record.custbody_xrc_fax_no?replace('+63', '0')}</strong>
+                    </td>
+                    <td class="border_rb" colspan="5" style="font-size: 10px;"><strong>ITEM CATEGORY:</strong></td>
+                    <td class="border_b" colspan="7" style="font-size: 10px;">${record.custbody_xrc_item_category}</td>
+                </tr>
+                <tr>
+                    <td class="border_rb" colspan="3" style="font-size: 10px;"><strong>&nbsp;</strong></td>
+                    <td class="border_rb" colspan="9" style="font-size: 9px;"><strong>&nbsp;</strong></td>
+                    <td class="border_rb" colspan="5" style="font-size: 10px;"><strong>PAYMENT TERMS:</strong></td>
+                    <td class="border_b" colspan="7" style="font-size: 10px; background-color: rgb(255, 242, 225);">
+                        <strong>${record.terms}</strong>
+                    </td>
+                </tr>
+            </table>
+            <table class="border_rbl" style="width: 100%;">
+                <tr>
+                    <td class="border_rb" colspan="3" align="center" style="background-color: #a8a8a8;"><strong>ITEM
+                            NO.</strong></td>
+                    <td class="border_rb" colspan="9" align="center" style="background-color: #a8a8a8;">
+                        <strong>DESCRIPTION</strong>
+                    </td>
+                    <td class="border_rb" colspan="2" align="center" style="background-color: #a8a8a8;">
+                        <strong>QTY</strong>
+                    </td>
+                    <td class="border_rb" colspan="3" align="center" style="background-color: #a8a8a8;">
+                        <strong>UNIT</strong>
+                    </td>
+                    <td class="border_rb" colspan="3" align="center" style="background-color: #a8a8a8;"><strong>UNIT
+                            PRICE</strong></td>
+                    <td class="border_b" colspan="4" align="center" style="background-color: #a8a8a8;">
+                        <strong>TOTAL</strong>
+                    </td>
+                </tr>
+                <#assign totalTranspoExpense=0 />
+                <#assign totalDiscount=0 />
+                <#assign subtotal=0 />
+                <#list record.item as item>
+                    <#if item.item.internalid=='10319'>
+                        <#assign totalDiscount=totalDiscount + item.grossamt />
+                        <#elseif item.item.internalid=='10320'>
+                            <#assign totalTranspoExpense=totalTranspoExpense + item.grossamt />
+                            <#else>
+                                <#assign subtotal=subtotal + item.grossamt />
+                    </#if>
+                    <#if item.item.internalid !='10319' && item.item.internalid !='10320'>
+                        <tr>
+                            <td class="border_rb" colspan="3" line-height="150%" align="center"><strong>${item_index +
+                                    1}</strong></td>
+                            <td class="border_rb" colspan="9" align="center"
+                                style="vertical-align: middle; font-size: 9px;">
+                                ${item.description}
+                            </td>
+                            <td class="border_rb" colspan="2" align="center" style="vertical-align: middle;">
+                                <strong>${item.quantity}</strong>
+                            </td>
+                            <td class="border_rb" colspan="3" align="center" style="vertical-align: middle;">
+                                <strong>${item.units}</strong>
+                            </td>
+                            <td class="border_rb" colspan="3" align="center" style="vertical-align: middle;">
+                                <strong>${nsformat_currency(item.rate * (1 +
+                                    ((item.taxrate1?keep_before("%")?number) / 100)))}</strong>
+                            </td>
+                            <td class="border_b" colspan="4" align="right" style="vertical-align: middle;">
+                                <strong>${item.grossamt}</strong>
+                            </td>
+                        </tr>
+                    </#if>
+                </#list>
+                <tr>
+                    <td class="border_rb" colspan="3" line-height="150%" align="center">&nbsp;</td>
+                    <td class="border_rb" colspan="9" align="center">&nbsp;</td>
+                    <td class="border_rb" colspan="2" align="center">&nbsp;</td>
+                    <td class="border_rb" colspan="3" align="center">&nbsp;</td>
+                    <td class="border_rb" colspan="3" align="center">&nbsp;</td>
+                    <td class="border_b" colspan="4" align="center">&nbsp;</td>
+                </tr>
+                <tr>
+                    <td class="border_rb" colspan="3" line-height="150%" align="center">&nbsp;</td>
+                    <td class="border_rb" colspan="9" align="center"
+                        style="background-color: #a8a8a8; vertical-align: middle;"><strong>***NOTHING
+                            FOLLOWS***</strong>
+                    </td>
+                    <td class="border_rb" colspan="2" align="center">&nbsp;</td>
+                    <td class="border_rb" colspan="3" align="center">&nbsp;</td>
+                    <td class="border_rb" colspan="3" align="center">&nbsp;</td>
+                    <td class="border_b" colspan="4" align="center">&nbsp;</td>
+                </tr>
+                <tr>
+                    <td class="border_r" colspan="3" line-height="150%" align="center">&nbsp;</td>
+                    <td class="border_r" colspan="9" align="center">&nbsp;</td>
+                    <td class="border_r" colspan="2" align="center">&nbsp;</td>
+                    <td class="border_r" colspan="3" align="center">&nbsp;</td>
+                    <td class="border_r" colspan="3" align="center">&nbsp;</td>
+                    <td colspan="4" align="center">&nbsp;</td>
+                </tr>
+            </table>
+            <table style="width: 100%;">
+                <tr>
+                    <td class="border_rbl" colspan="14" style="background-color: rgb(255, 242, 225); font-size: 14px;">
+                        <strong>PROJECT CODE/NAME: ${record.location}</strong>
+                    </td>
+                    <td class="border_rb" colspan="6" align="right"><strong>SUB-TOTAL</strong></td>
+                    <td class="border_rb" colspan="4" align="right"><strong>${nsformat_currency(subtotal)}</strong></td>
+                </tr>
+                <tr>
+                    <td class="border_rbl" colspan="14" style="background-color: rgb(255, 242, 225);">
+                        <strong>
+                            REQUESTED BY: <#if is_requestor == "true">${record.custbody_xrc_purchase_requestor?keep_after(" ")}<#else>${record.employee?keep_after(" ")}</#if>
+                        </strong>
+                    </td>
+                    <td class="border_rb" colspan="6" align="right"><strong>LALAMOVE/GAS</strong></td>
+                    <td class="border_rb" colspan="4" align="right">
+                        <strong>${nsformat_currency(totalTranspoExpense)}</strong>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="border_rl" colspan="14">&nbsp;</td>
+                    <td class="border_rb" colspan="6" align="right"><strong>DISCOUNT</strong></td>
+                    <td class="border_rb" colspan="4" align="right"><strong>${nsformat_currency(totalDiscount)}</strong>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="border_rl" colspan="14">&nbsp;</td>
+                    <td class="border_rb" colspan="6" align="right" style="font-size: 14px;"><strong>TOTAL
+                            AMOUNT</strong>
+                    </td>
+                    <td class="border_rb" colspan="4" align="right"
+                        style="font-size: 14px; background-color: rgb(255, 242, 225);"><strong>${record.total}</strong>
+                    </td>
+                </tr>
+            </table>
+            <table class="border_rbl" style="width: 100%;">
+                <tr>
+                    <td colspan="12" style="padding: 0;">
+                        <table class="border_rb" style="width: 100%; margin: 0;">
+                            <tr>
+                                <td class="border_b" colspan="24" style="background-color: #a8a8a8;"><strong>TERMS AND
+                                        CONDITION</strong>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>&nbsp;</td>
+                            </tr>
+                            <tr>
+                                <td colspan="24">
+                                    1.0 The purchaser reserves the right to reject any or all items delivered which does
+                                    not
+                                    conform to the prescriptions and/or specification so furnished. <br />
+                                    2.0 Reject items due to poor quality will be returned at supplier's account and to
+                                    be
+                                    replaced with good quality. <br />
+                                    3.0 Prices indicated above will not be subjected for price increase once agreed by
+                                    the
+                                    vendor. <br />
+                                    4.0 Deliveries of products in excess of the quantity or delivery specifies in the
+                                    order
+                                    will not be accepted.Excess will be returned at vendor's risk and expense. <br />
+                                    5.0 Terms will start right after documents encountered.
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>&nbsp;</td>
+                            </tr>
+                        </table>
+                    </td>
+                    <td colspan="12" style="padding: 0;">
+                        <table style="width: 100%;">
+                            <tr>
+                                <td>&nbsp;</td>
+                            </tr>
+                            <tr>
+                                <td>&nbsp;</td>
+                            </tr>
+                            <tr>
+                                <td colspan="6"><strong>Prepared By:</strong></td>
+                                <td colspan="12">&nbsp;</td>
+                                <td colspan="6"><strong>&nbsp;</strong></td>
+                            </tr>
+                            <tr>
+                                <td colspan="24">&nbsp;</td>
+                            </tr>
+                            <tr>
+                                <td colspan="12" align="center" style="vertical-align: bottom;">${record.custbody_xrc_prepared_by?keep_after(" ")}</td>
+                                <td colspan="6" align="center" style="vertical-align: bottom;">&nbsp;</td>
+                                <td colspan="6" align="center" style="vertical-align: bottom;">&nbsp;</td>
+                            </tr>
+                            <tr>
+                                <td colspan="12" align="center" style="vertical-align: bottom; font-size: 10px;">
+                                    <strong>${record.custbody_xrc_prepared_by.title}</strong>
+                                </td>
+                                <td colspan="6" align="center" style="vertical-align: bottom; font-size: 10px;">
+                                    <strong>&nbsp;</strong>
+                                </td>
+                                <td colspan="6" align="center" style="vertical-align: bottom; font-size: 10px;">
+                                    <strong>&nbsp;</strong>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td colspan="24">&nbsp;</td>
+                            </tr>
+                            <tr>
+                                <td colspan="24" align="center"><strong>APPROVED BY:</strong></td>
+                            </tr>
+                            <tr>
+                                <td colspan="24">&nbsp;</td>
+                            </tr>
+                            <#assign emp_initials=""/>
+                            <tr>
+                                <td colspan="12" align="center" style="vertical-align: bottom; font-size: 10px;">
+                                    <#assign _getEmpInitials="https://9794098.extforms.netsuite.com/app/site/hosting/scriptlet.nl?script=2033&deploy=1&compid=9794098&ns-at=AAEJ7tMQYK5T_zncik8AJCUG2buC_UZ60abmh0-_dLfpVGMRsYw&emp_id="+ record.custbody_xrc_approver1.id />
+                                    <#include _getEmpInitials />
+                                    ${emp_initials}
+                                </td>
+                                <td colspan="12" align="center" style="vertical-align: bottom; font-size: 10px;">
+                                    <#assign _getEmpInitials="https://9794098.extforms.netsuite.com/app/site/hosting/scriptlet.nl?script=2033&deploy=1&compid=9794098&ns-at=AAEJ7tMQYK5T_zncik8AJCUG2buC_UZ60abmh0-_dLfpVGMRsYw&emp_id="+ record.custbody_xrc_approver3.id />
+                                    <#include _getEmpInitials />
+                                    ${emp_initials}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td colspan="12" align="center" style="vertical-align: bottom;">
+                                    <table style="width: 100%; padding: 0; margin: 0;">
+                                        <tr style="padding: 0; margin: 0;">
+                                            <td align="center" style="padding: 0; margin: 0; font-size: 10px;">
+                                                <strong style="text-align: center;">
+                                                    ${record.custbody_xrc_approver1.title}
+                                                </strong>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </td>
+                                <td colspan="12" align="center" style="vertical-align: top; font-size: 10px;">
+                                    <strong>${record.custbody_xrc_approver3.title}</strong>
+                                </td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="12" style="padding: 0;">
+                        <table style="width: 100%;">
+                            <tr>
+                                <td colspan="24">&nbsp;</td>
+                            </tr>
+                            <tr>
+                                <td class="border_b" colspan="24"></td>
+                            </tr>
+                            <tr>
+                                <td align="center" colspan="24"><strong>SIGNATURE OVER PRINTED NAME (VENDOR)</strong>
+                                </td>
+                            </tr>
+                        </table>
+                    </td>
+                    <td colspan="12" align="center">
+                        <table style="width: 100%; margin-top: 20px;">
+                            <tr>
+                                <td colspan="24" align="center" style="vertical-align: bottom; font-size: 10px;">AMC
+                                </td>
+                            </tr>
+                            <tr>
+                                <td colspan="24" align="center" style="vertical-align: bottom; font-size: 10px;">
+                                    <strong>CHAIRMAN</strong>
+                                </td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+            </table>
+            <#function getFormattedAmount amount>
+                <#assign integerPart=amount?int>
+                    <#assign decimalPart=(amount - integerPart)?string('0.##')>
+                        <#if decimalPart=="0">
+                            <#return "${amount?string('###,###,###,###')}.00">
+                                <#else>
+                                    <#assign returnString="${amount?string('###,###,###,###.##')}">
+                                        <#if returnString?split(".")[1]?length==1>
+                                            <#assign returnString=returnString + "0" />
+                                        </#if>
+                                        <#return returnString>
+                        </#if>
+            </#function>
+    </body>
+</pdf>

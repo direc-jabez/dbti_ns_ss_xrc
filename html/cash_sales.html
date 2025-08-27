@@ -1,0 +1,571 @@
+<?xml version="1.0"?>
+<!DOCTYPE pdf PUBLIC "-//big.faceless.org//report" "report-1.1.dtd">
+<pdf>
+
+    <head>
+        <link name="NotoSans" type="font" subtype="truetype" src="${nsfont.NotoSans_Regular}"
+            src-bold="${nsfont.NotoSans_Bold}" src-italic="${nsfont.NotoSans_Italic}"
+            src-bolditalic="${nsfont.NotoSans_BoldItalic}" bytes="2" />
+        <#if .locale=="zh_CN">
+            <link name="NotoSansCJKsc" type="font" subtype="opentype" src="${nsfont.NotoSansCJKsc_Regular}"
+                src-bold="${nsfont.NotoSansCJKsc_Bold}" bytes="2" />
+            <#elseif .locale=="zh_TW">
+                <link name="NotoSansCJKtc" type="font" subtype="opentype" src="${nsfont.NotoSansCJKtc_Regular}"
+                    src-bold="${nsfont.NotoSansCJKtc_Bold}" bytes="2" />
+                <#elseif .locale=="ja_JP">
+                    <link name="NotoSansCJKjp" type="font" subtype="opentype" src="${nsfont.NotoSansCJKjp_Regular}"
+                        src-bold="${nsfont.NotoSansCJKjp_Bold}" bytes="2" />
+                    <#elseif .locale=="ko_KR">
+                        <link name="NotoSansCJKkr" type="font" subtype="opentype" src="${nsfont.NotoSansCJKkr_Regular}"
+                            src-bold="${nsfont.NotoSansCJKkr_Bold}" bytes="2" />
+                        <#elseif .locale=="th_TH">
+                            <link name="NotoSansThai" type="font" subtype="opentype"
+                                src="${nsfont.NotoSansThai_Regular}" src-bold="${nsfont.NotoSansThai_Bold}" bytes="2" />
+        </#if>
+
+        <style>
+            * {
+                <#if .locale=="zh_CN">font-family: NotoSans, NotoSansCJKsc, sans-serif;
+                <#elseif .locale=="zh_TW">font-family: NotoSans, NotoSansCJKtc, sans-serif;
+                <#elseif .locale=="ja_JP">font-family: NotoSans, NotoSansCJKjp, sans-serif;
+                <#elseif .locale=="ko_KR">font-family: NotoSans, NotoSansCJKkr, sans-serif;
+                <#elseif .locale=="th_TH">font-family: NotoSans, NotoSansThai, sans-serif;
+                <#else>font-family: NotoSans, sans-serif;
+                </#if>
+            }
+
+            table {
+                font-size: 9pt;
+                table-layout: fixed;
+            }
+
+            th {
+                font-weight: bold;
+                font-size: 8pt;
+                vertical-align: middle;
+                padding: 5px 6px 3px;
+                background-color: #e3e3e3;
+                color: #333333;
+            }
+
+            td {
+                padding: 4px 6px;
+            }
+
+            td p {
+                align: left
+            }
+
+            b {
+                font-weight: bold;
+                color: #333333;
+            }
+
+            table.header td {
+                padding: 0;
+                font-size: 10pt;
+            }
+
+            table.footer td {
+                padding: 0;
+                font-size: 8pt;
+            }
+
+            table.itemtable th {
+                padding-bottom: 10px;
+                padding-top: 10px;
+            }
+
+            table.body td {
+                padding-top: 2px;
+            }
+
+            table.total {
+                page-break-inside: avoid;
+            }
+
+            tr.totalrow {
+                background-color: #e3e3e3;
+                line-height: 200%;
+            }
+
+            td.totalboxtop {
+                font-size: 12pt;
+                background-color: #e3e3e3;
+            }
+
+            td.addressheader {
+                font-size: 8pt;
+                padding-top: 6px;
+                padding-bottom: 2px;
+            }
+
+            td.address {
+                padding-top: 0;
+            }
+
+            td.totalboxmid {
+                font-size: 28pt;
+                padding-top: 20px;
+                background-color: #e3e3e3;
+            }
+
+            span.title {
+                font-size: 28pt;
+            }
+
+            span.number {
+                font-size: 16pt;
+            }
+
+            span.itemname {
+                font-weight: bold;
+                line-height: 150%;
+            }
+
+            hr {
+                width: 100%;
+                color: #d3d3d3;
+                background-color: #d3d3d3;
+                height: 1px;
+            }
+        </style>
+    </head>
+
+    <body header="nlheader" header-height="10%" footer="nlfooter" footer-height="20pt" padding="0.2in 0.2in 0.2in 0.2in"
+        size="Letter">
+        <#assign account_name='' />
+        <#assign bank_branch='' />
+        <#assign account_number='' />
+        <#assign legalName='' />
+        <#assign address='' />
+        <#assign phone='' />
+        <#assign fax='' />
+
+        <#assign
+            _suiteletLocSubDetailsSuiteletURL_LocationDetails="https://9794098.extforms.netsuite.com/app/site/hosting/scriptlet.nl?script=1529&deploy=1&compid=9794098&ns-at=AAEJ7tMQ9isDm4xWz0nN5mUFQ96GBHVVq20h1QrvH-gpYu7Df_4&querytype=location&locid="
+            + record.location.id>
+            <#include _suiteletLocSubDetailsSuiteletURL_LocationDetails />
+
+            <#assign
+                _suiteletLocSubDetailsSuiteletURL_SubsidiaryDetails="https://9794098.extforms.netsuite.com/app/site/hosting/scriptlet.nl?script=1529&deploy=1&compid=9794098&ns-at=AAEJ7tMQ9isDm4xWz0nN5mUFQ96GBHVVq20h1QrvH-gpYu7Df_4&querytype=subsidiary&subid="
+                + record.subsidiary.id>
+                <#include _suiteletLocSubDetailsSuiteletURL_SubsidiaryDetails />
+
+                <table style="width: 100%; font-size: 16px;">
+                    <tr>
+                        <td align="right"><b>STATEMENT OF ACCOUNT</b></td>
+                    </tr>
+                    <tr>
+                        <td align="right"><b>No. : ${record.tranid}</b></td>
+                    </tr>
+                </table>
+                <table style="width: 100%; border: 1px solid black; background-color: #d3d3d3;">
+                    <tr>
+                        <td align="right">Statement Date : ${record.trandate}</td>
+                    </tr>
+                    <tr>
+                        <td align="right">DUE Date : ${record.duedate}</td>
+                    </tr>
+                    <tr>
+                        <td align="left">To : ${record.entity?keep_after(" ")}</td>
+                    </tr>
+                    <tr>
+                        <td align="left">Customer Account ID : </td>
+                    </tr>
+                    <tr>
+                        <td align="left">CUSTOMER BANK ACCT. CODE : </td>
+                    </tr>
+                    <tr>
+                        <td align="left">Address : ${record.billaddress?html?split("<br />"?html)?join(", ")}
+                        </td>
+                    </tr>
+                </table>
+                <table class="border_r border_b border_l" style="width: 100%; font-size: 10px;">
+                    <tr>
+                        <td colspan="4"><b>ITEM</b></td>
+                        <td colspan="5"><b>DESCRIPTION</b></td>
+                        <td colspan="2" align="right"><b>QTY</b></td>
+                        <td align="right"><b>UNIT</b></td>
+                        <td colspan="4" align="right"><b>RATE</b></td>
+                        <td colspan="4" align="right"><b>AMOUNT</b></td>
+                        <td colspan="4" align="center"><b>VAT</b></td>
+                        <td colspan="4" align="right"><b>WHT CODE</b></td>
+                        <td colspan="4" align="right"><b>WHT RATE</b></td>
+                        <td colspan="4" align="right"><b>WHT AMT</b></td>
+                        <td colspan="5" align="right"><b>GROSS AMT</b></td>
+                    </tr>
+                    <tr>
+                        <td colspan="4"><span>Beginning Balance</span></td>
+                        <td colspan="32"></td>
+                        <td colspan="5" align="right">0.00</td>
+                    </tr>
+                    <tr>
+                        <td colspan="4">Payment</td>
+                        <td colspan="32"></td>
+                        <td colspan="5" align="right">0.00</td>
+                    </tr>
+                    <tr>
+                        <td colspan="4">Balance</td>
+                        <td colspan="32"></td>
+                        <td class="border_t" colspan="5" align="right">0.00</td>
+                    </tr>
+                </table>
+                <table class="border_r border_b border_l" style="width: 100%; font-size: 10px;">
+                    <tr>
+                        <td colspan="41"><b>Charges for the Month of June, 2024</b></td>
+                    </tr>
+                    <#assign totalCharges=0 />
+                    <#assign rates="" />
+                    <#list record.item as item>
+                        <#assign isGroupedWHTTaxCode=false />
+                        <#assign rates_array=[""] />
+
+                        <#if item.item.internalid!="5233" || item.item.internalid!="5255">
+                            <#assign totalCharges+=item.grossamt />
+
+                            <tr>
+                                <td colspan="4">${item.item} ${item.custpage_4601_witaxcode}</td>
+                                <td colspan="5">${item.description}</td>
+                                <td colspan="2" align="right">${item.quantity}</td>
+                                <td align="right">${item.units}</td>
+                                <td colspan="4" align="right">${getFormattedAmount(item.rate)}</td>
+                                <td colspan="4" align="right">${getFormattedAmount(item.amount)}</td>
+                                <td colspan="4" align="right">${getFormattedAmount(item.tax1amt)}</td>
+
+                                <#if item.custcol_4601_witaxapplies>
+                                    <#assign
+                                        _suitelet_XRC_SL_SALES_INVOICE="https://9794098.extforms.netsuite.com/app/site/hosting/scriptlet.nl?script=1764&deploy=1&compid=9794098&ns-at=AAEJ7tMQD1Ln6fPGTtbFAj1APheu0W3ItA_Eqd2PpuUz9kTR-0s&id="
+                                        + item.custcol_4601_witaxcode.internalid />
+                                    <#assign rates_array=rates?split(",") />
+
+                                    <#if rates_array[0]=="">
+                                        <#assign isGroupedWHTTaxCode=false />
+                                        <td colspan="4" align="right">${item.custcol_4601_witaxcode}</td>
+                                        <td colspan="4" align="center">${item.custcol_4601_witaxrate}</td>
+                                        <td colspan="4" align="right">${getFormattedAmount(item.amount)}</td>
+                                        <td colspan="5" align="right">${getFormattedAmount(item.grossamt)}</td>
+                                        <#else>
+                                            <#assign isGroupedWHTTaxCode=true />
+                                            <#assign first_rate=rates_array[0] />
+                                            <td colspan="28" align="right">${item.custcol_4601_witaxcode}</td>
+                                            <td colspan="4" align="center">${first_rate}</td>
+                                            <td colspan="4" align="right">${getFormattedAmount(item.amount)}</td>
+                                            <td colspan="5" align="right">${getFormattedAmount(item.grossamt)}</td>
+                                    </#if>
+                                    <#else>
+                                        <td colspan="4" align="right">&nbsp;</td>
+                                        <td colspan="4" align="center">&nbsp;</td>
+                                        <td colspan="4" align="right">&nbsp;</td>
+                                        <td colspan="5" align="right">&nbsp;</td>
+                                </#if>
+                            </tr>
+                        </#if>
+                        <#if (item.item.internalid=="5233" || item.item.internalid=="5255" ) && isGroupedWHTTaxCode>
+                            <#list rates_array as rate>
+                                <#if rate_index==0>
+                                    <#else>
+                                        <tr>
+                                            <td colspan="28" align="right">${item.custcol_4601_witaxcode}</td>
+                                            <td colspan="4" align="center">${rate}</td>
+                                            <td colspan="4" align="right">${getFormattedAmount(item.amount?number *
+                                                rate?keep_before("%")?number)}</td>
+                                            <td colspan="5" align="right">${getFormattedAmount(item.grossamt)}</td>
+                                        </tr>
+                                </#if>
+                            </#list>
+                        </#if>
+                    </#list>
+                    <tr>
+                        <td colspan="4">Total</td>
+                        <td colspan="32" align="right">&nbsp;</td>
+                        <td colspan="5" align="right" style="border-top: 1px solid black;">
+                            ${getFormattedAmount(totalCharges)}</td>
+                    </tr>
+                    <tr>
+                        <td colspan="41"><b>Other Charges for the Month of June, 2024</b></td>
+                    </tr>
+                    <#assign totalOtherCharges=0 />
+
+                    <tr style="margin-top: 70px;">
+                        <td colspan="24">&nbsp;</td>
+                        <td colspan="12" align="left">Sub Total (Other Charges)</td>
+                        <td colspan="5" align="right">${getFormattedAmount(totalOtherCharges)}</td>
+                    </tr>
+                    <tr>
+                        <td colspan="24">&nbsp;</td>
+                        <td colspan="12" align="left">Current Charges</td>
+                        <td class="border_t" colspan="5" align="right">
+                            ${getFormattedAmount(record.item[0].grossamt
+                            + totalOtherCharges)}</td>
+                    </tr>
+                    <tr style="margin-bottom: 5px;">
+                        <td colspan="24">&nbsp;</td>
+                        <td colspan="12" align="left">Total Statement Amount</td>
+                        <td class="border_t border_b" colspan="5" align="right">
+                            <b>${getFormattedAmount(record.item[0].grossamt + totalOtherCharges)}</b>
+                        </td>
+                    </tr>
+                </table>
+                <table class="border_r border_b border_l" style="width: 100%; font-size: 10px;">
+                    <tr>
+                        <td colspan="24"><b>Reminders</b></td>
+                    </tr>
+                    <tr>
+                        <td colspan="24">
+                            1. Please make checks payable to ${account_name} and deposit payment
+                            directly to our bank account, details as
+                            <table style="width: 100%; border: 1px dashed black;">
+                                <tr>
+                                    <td colspan="16">
+                                        <table style="width: 100%;">
+                                            <tr style="background-color: #d3d3d3;">
+                                                <td colspan="6"><b>BDO</b></td>
+                                                <td colspan="6" align="right"><b>Check Transaction Slip</b></td>
+                                            </tr>
+                                            <tr>
+                                                <td colspan="12" style="border-bottom: 1px solid black;">
+                                                    &nbsp;
+                                                </td>
+                                            </tr>
+                                            <tr style="font-size: 9px;">
+                                                <td colspan="3">
+                                                    <span
+                                                        style="border: 1px solid black; padding-left: 3px; padding-right: 3px; font-weight: bold;">/</span>&nbsp;Bills
+                                                    Payment
+                                                </td>
+                                                <td colspan="4">Company Name</td>
+                                                <td colspan="3">Institution Code</td>
+                                                <td colspan="2">Product Code</td>
+                                            </tr>
+                                            <tr style="font-size: 9px;">
+                                                <td colspan="3">&nbsp;</td>
+                                                <td colspan="4" style="border-bottom: 1px solid black;">
+                                                    <b>${legalName?upper_case}</b>
+                                                </td>
+                                                <td colspan="3"
+                                                    style="font-size: 11px; border-bottom: 1px solid black;">
+                                                    <b><span
+                                                            style="border-left: 1px solid black;">&nbsp;2&nbsp;</span><span
+                                                            style="border-left: 1px solid black;">&nbsp;3&nbsp;</span><span
+                                                            style="border-left: 1px solid black;">&nbsp;5&nbsp;</span><span
+                                                            style="border-left: 1px solid black; border-right: 1px solid black;">&nbsp;2&nbsp;</span></b>
+                                                </td>
+                                                <td colspan="2" style="border-bottom: 1px solid black;">&nbsp;
+                                                </td>
+                                            </tr>
+                                            <tr style="font-size: 9px;">
+                                                <td colspan="3">&nbsp;</td>
+                                                <td colspan="4">Subscriber's name</td>
+                                                <td colspan="5">Subscriber's Account No.</td>
+                                            </tr>
+                                            <tr style="font-size: 9px; border-bottom: 1px solid black;">
+                                                <td colspan="3">&nbsp;</td>
+                                                <td colspan="4"><b>${record.entity?upper_case?keep_after("
+                                                        ")}</b></td>
+                                                <td colspan="5"><b>SAM2023000009</b></td>
+                                            </tr>
+                                        </table>
+                                    </td>
+                                    <td colspan="8">
+                                        <table style="width: 100%; font-size: 9px;">
+                                            <tr>
+                                                <td style="padding-top: 0; padding-bottom: 0;">Currency</td>
+                                            </tr>
+                                            <tr style="border-bottom: 1px solid black;">
+                                                <td colspan="3">
+                                                    <span
+                                                        style="border: 1px solid black; padding-left: 3px; padding-right: 3px; font-weight: bold;"></span>&nbsp;Peso
+                                                </td>
+                                                <td colspan="4">
+                                                    <span
+                                                        style="border: 1px solid black; padding-left: 3px; padding-right: 3px; font-weight: bold;">&nbsp;</span>&nbsp;US
+                                                    Dollar
+                                                </td>
+                                                <td colspan="2">
+                                                    <span
+                                                        style="border: 1px solid black; padding-left: 3px; padding-right: 3px; font-weight: bold;">&nbsp;</span>&nbsp;Others
+                                                </td>
+                                                <td colspan="3">
+                                                    &nbsp;
+                                                </td>
+                                            </tr>
+                                            <tr style="border-bottom: 1px solid black;">
+                                                <td colspan="3">
+                                                    <span
+                                                        style="border: 1px solid black; padding-left: 3px; padding-right: 3px; font-weight: bold;"></span>&nbsp;Local
+                                                </td>
+                                                <td colspan="3">
+                                                    <span
+                                                        style="border: 1px solid black; padding-left: 3px; padding-right: 3px; font-weight: bold;">&nbsp;</span>&nbsp;On-us
+                                                </td>
+                                                <td colspan="3" style="font-size: 8px;">
+                                                    <span
+                                                        style="border: 1px solid black; padding-left: 3px; padding-right: 3px; font-weight: bold;">&nbsp;</span>&nbsp;MC/DD
+                                                </td>
+                                                <td colspan="3">
+                                                    <span
+                                                        style="border: 1px solid black; padding-left: 3px; padding-right: 3px; font-weight: bold;">&nbsp;</span>&nbsp;Others
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td colspan="12"
+                                                    style="font-size: 8px; padding-top: 0; padding-bottom: 0;">
+                                                    Use
+                                                    separate slip(s) for each type of transaction.</td>
+                                            </tr>
+                                            <tr style="border-bottom: 1px solid black;">
+                                                <td colspan="4" style="padding-bottom: 0;">Bank/Branch</td>
+                                                <td colspan="4" style="padding-bottom: 0;">Check No.</td>
+                                                <td colspan="4" style="padding-bottom: 0;">Amount</td>
+                                            </tr>
+                                            <tr>
+                                                <td colspan="4"
+                                                    style="border-right: 1px solid black; border-bottom: 1px solid black;">
+                                                    <b>BDO</b>
+                                                </td>
+                                                <td colspan="4" style="border-bottom: 1px solid black;">&nbsp;
+                                                </td>
+                                                <td colspan="4"
+                                                    style="border-left: 1px solid black; border-bottom: 1px solid black; border-right: 1px solid black;">
+                                                    <b>${getFormattedAmount(record.item[0].grossamt +
+                                                        totalOtherCharges)}</b>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td colspan="4"
+                                                    style="border-right: 1px solid black; border-bottom: 1px solid black;">
+                                                </td>
+                                                <td colspan="4" style="border-bottom: 1px solid black;"></td>
+                                                <td colspan="4"
+                                                    style="border-left: 1px solid black; border-bottom: 1px solid black; border-right: 1px solid black;">
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td colspan="4" style="border-bottom: 1px solid black;">&nbsp;
+                                                </td>
+                                                <td colspan="4" style="border-bottom: 1px solid black;">Total
+                                                    Amount
+                                                </td>
+                                                <td colspan="4"
+                                                    style="border-left: 1px solid black; border-bottom: 1px solid black; border-right: 1px solid black;">
+                                                    <b>${getFormattedAmount(record.item[0].grossamt +
+                                                        totalOtherCharges)}</b>
+                                                </td>
+                                            </tr>
+                                        </table>
+                                    </td>
+                                </tr>
+                            </table>
+                            <table style="width: 100%; font-size: 9px;">
+                                <tr>
+                                    <td colspan="2">
+                                        <b>1.2 Other Bank</b>
+                                    </td>
+                                    <td colspan="10">
+                                        <table style="width: 100%; font-size: 9px;">
+                                            <tr>
+                                                <td colspan="2">Bank/Branch</td>
+                                                <td colspan="10"><b>${bank_branch}</b></td>
+                                            </tr>
+                                            <tr>
+                                                <td colspan="2">Account No</td>
+                                                <td colspan="10"><b>Acct No: ${account_number}</b></td>
+                                            </tr>
+                                        </table>
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="24">
+                            2. All payments must be received on or before June 10, 20224 to avoid penalty of 2%
+                            per
+                            month.
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="24">
+                            3. Please review your statement immediately. Any discrepancy in the statement should
+                            be made
+                            known in writing to the Company's Mall Admin within five (5) days from receipt of
+                            this
+                            statement. to inform the Mall Admin within the said period shall result to a
+                            conclusive
+                            presumption that the amount stated in the SOA is correct. For any inquiry, you may
+                            call
+                            Credit and Collection Department at (02) 948-1528; 0977-607-7646 ; 0961-306-5370.
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="24">
+                            4. Please be informed that application of payment is as follows:<br />
+                            <span style="margin-left: 20px;">a) Penalty and other charges b) Utilities c) CUSA
+                                and
+                                Aircon; and d) Rent</span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="24">
+                            5. Kindly submit your BIR form 2307 until the end of this month, failure to
+                            comply<br />
+                            <span style="margin-left: 20px;">5% withholding tax deducted will be charged back.
+                                Please
+                                Ignore if not applicable.</span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="24">
+                            6. This is a system generated Statement Of Account, no signature is needed.
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="24">
+                            <b>
+                                ADVISORY<br />
+                                Mall/Building admin is no longer authorized to receive payments from tenants.
+                                Check or
+                                cash payment should be deposited directly to the above mentioned bank account.
+                                Please
+                                present your deposit slip to the mall admin to claim your official and/or
+                                acknowledgement receipt. Failure to comply will result to unposted payment. This
+                                bill
+                                has a cut-off, any adjustment/s will be reflected on the succeeding billing/s.
+                            </b>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="12">&nbsp;</td>
+                        <td colspan="12">Received by:</td>
+                    </tr>
+                    <tr>
+                        <td>&nbsp;</td>
+                    </tr>
+                    <tr>
+                        <td colspan="12">&nbsp;</td>
+                        <td colspan="6" style="border-top: 1px dashed black;">(Print name and signature)</td>
+                        <td colspan="6" style="border-top: 1px dashed black; margin-left: 10px;">Date/Time</td>
+                    </tr>
+                </table>
+                <table style="width: 100%; font-size: 9px;">
+                    <tr>
+                        <td align="right">Date/Time generated ${.now}</td>
+                    </tr>
+                </table>
+                
+                <#function getFormattedAmount amount>
+                    <#assign integerPart=amount?int>
+                        <#assign decimalPart=amount - integerPart>
+                            <#if decimalPart==0>
+                                <#return "${amount?string(' ###,###,###,###.##')}.00">
+                                    <#else>
+                                        <#assign returnString="${amount?string('###,###,###,###.##')}" />
+                                        <#if returnString?split(".")[1]?length==1>
+                                            <#assign returnString=returnString + "0" />
+                                        </#if>
+                                        <#return returnString>
+                            </#if>
+                </#function>
+    </body>
+</pdf>

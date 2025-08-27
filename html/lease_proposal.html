@@ -1,0 +1,700 @@
+<?xml version="1.0"?>
+<!DOCTYPE pdf PUBLIC "-//big.faceless.org//report" "report-1.1.dtd">
+<pdf>
+
+    <head>
+        <link name="Calibri" type="font" subtype="truetype" 
+            src="https://9794098.app.netsuite.com/core/media/media.nl?id=11974&amp;c=9794098&amp;h=Tzs6H62oIZIwvhqfqV1Ko8qWJbcKbXwNKCypY8B1b2TJjtz9&amp;_xt=.ttf"
+            src-bold="https://9794098.app.netsuite.com/core/media/media.nl?id=11975&amp;c=9794098&amp;h=UtaE9418zjh6xw2HUlfivXDv8gY6Ru2KfWoF5O-UQquRJcLt&amp;_xt=.ttf" 
+            src-italic="https://9794098.app.netsuite.com/core/media/media.nl?id=11977&amp;c=9794098&amp;h=J6MfppPC1izNh1HNL3RdMpCeQkbhzYaGFf9jHK8EeRvBF6yd&amp;_xt=.ttf"
+            src-bolditalic="https://9794098.app.netsuite.com/core/media/media.nl?id=11976&amp;c=9794098&amp;h=YFXSTmWFjjCP9L6JXI60DN3-Yy8eLz4PGBllG7ZaouEZdycu&amp;_xt=.ttf" bytes="2" />
+        
+        <#if .locale=="zh_CN">
+            <link name="NotoSansCJKsc" type="font" subtype="opentype" src="${nsfont.NotoSansCJKsc_Regular}"
+                src-bold="${nsfont.NotoSansCJKsc_Bold}" bytes="2" />
+            <#elseif .locale=="zh_TW">
+                <link name="NotoSansCJKtc" type="font" subtype="opentype" src="${nsfont.NotoSansCJKtc_Regular}"
+                    src-bold="${nsfont.NotoSansCJKtc_Bold}" bytes="2" />
+                <#elseif .locale=="ja_JP">
+                    <link name="NotoSansCJKjp" type="font" subtype="opentype" src="${nsfont.NotoSansCJKjp_Regular}"
+                        src-bold="${nsfont.NotoSansCJKjp_Bold}" bytes="2" />
+                    <#elseif .locale=="ko_KR">
+                        <link name="NotoSansCJKkr" type="font" subtype="opentype" src="${nsfont.NotoSansCJKkr_Regular}"
+                            src-bold="${nsfont.NotoSansCJKkr_Bold}" bytes="2" />
+                        <#elseif .locale=="th_TH">
+                            <link name="NotoSansThai" type="font" subtype="opentype"
+                                src="${nsfont.NotoSansThai_Regular}" src-bold="${nsfont.NotoSansThai_Bold}" bytes="2" />
+        </#if>
+        <macrolist>
+            <macro id="nlfooter">
+                <table class="footer" style="width: 100%;">
+                    <tr>
+                        <td align="right">
+                            <pagenumber /> of
+                            <totalpages />
+                        </td>
+                    </tr>
+                </table>
+            </macro>
+        </macrolist>
+        <style>
+            * {
+                <#if .locale=="zh_CN">font-family: NotoSans, NotoSansCJKsc, sans-serif;
+                <#elseif .locale=="zh_TW">font-family: NotoSans, NotoSansCJKtc, sans-serif;
+                <#elseif .locale=="ja_JP">font-family: NotoSans, NotoSansCJKjp, sans-serif;
+                <#elseif .locale=="ko_KR">font-family: NotoSans, NotoSansCJKkr, sans-serif;
+                <#elseif .locale=="th_TH">font-family: NotoSans, NotoSansThai, sans-serif;
+                <#else>font-family: Calibri, sans-serif;
+                </#if>
+            }
+
+            table {
+                font-size: 9pt;
+                table-layout: fixed;
+            }
+
+            th {
+                font-weight: bold;
+                font-size: 8pt;
+                vertical-align: middle;
+                padding: 5px 6px 3px;
+                background-color: #e3e3e3;
+                color: #333333;
+            }
+
+            td {
+                padding: 4px 6px;
+            }
+
+            td p {
+                align: left
+            }
+
+            b {
+                font-weight: bold;
+                color: #333333;
+            }
+
+            table.header td {
+                padding: 0;
+                font-size: 10pt;
+            }
+
+            table.footer td {
+                padding: 0;
+                font-size: 8pt;
+            }
+
+            table.itemtable th {
+                padding-bottom: 10px;
+                padding-top: 10px;
+            }
+
+            table.body td {
+                padding-top: 2px;
+            }
+
+            table.total {
+                page-break-inside: avoid;
+            }
+
+            tr.totalrow {
+                background-color: #e3e3e3;
+                line-height: 200%;
+            }
+
+            td.totalboxtop {
+                font-size: 12pt;
+                background-color: #e3e3e3;
+            }
+
+            td.addressheader {
+                font-size: 8pt;
+                padding-top: 6px;
+                padding-bottom: 2px;
+            }
+
+            td.address {
+                padding-top: 0;
+            }
+
+            td.totalboxmid {
+                font-size: 28pt;
+                padding-top: 20px;
+                background-color: #e3e3e3;
+            }
+
+            td.totalboxbot {
+                background-color: #e3e3e3;
+                font-weight: bold;
+            }
+
+            span.title {
+                font-size: 28pt;
+            }
+
+            span.number {
+                font-size: 16pt;
+            }
+
+            span.itemname {
+                font-weight: bold;
+                line-height: 150%;
+            }
+
+            hr {
+                width: 100%;
+                color: #d3d3d3;
+                background-color: #d3d3d3;
+                height: 1px;
+            }
+
+            .border_t {
+                border-top: 1px solid black;
+            }
+
+            .border_r {
+                border-right: 1px solid black;
+            }
+
+            .border_b {
+                border-bottom: 1px solid black;
+            }
+
+            .border_l {
+                border-left: 1px solid black;
+            }
+
+            .notes tr td,
+            .terms tr td {
+                padding-top: 1px;
+                padding-bottom: 1px;
+            }
+        </style>
+    </head>
+
+    <body header="nlheader" header-height="3pt" footer="nlfooter" footer-height="110px" padding="0.2in 0.5in 0 0.5in"
+        size="Legal" style="font-size: 10px; margin: 0.25pt;">
+        <#assign locationLogoURL='' />
+        <#assign customerLegalName='' />
+        <#assign customerTradeName='' />
+        <#assign default_address='' />
+
+        <#assign legalName='' />
+        <#assign address='' />
+        <#assign phone='' />
+        <#assign fax='' />
+
+        <#assign _suiteletLocSubDetailsURL="https://9794098.extforms.netsuite.com/app/site/hosting/scriptlet.nl?script=1529&deploy=1&compid=9794098&ns-at=AAEJ7tMQ9isDm4xWz0nN5mUFQ96GBHVVq20h1QrvH-gpYu7Df_4&querytype=location"
+            + "&locid=" + record.location.id + "&custid=" + record.entity.id>
+        <#include _suiteletLocSubDetailsURL />
+        
+        <#assign _suiteletLocSubDetailsURL="https://9794098.extforms.netsuite.com/app/site/hosting/scriptlet.nl?script=1529&deploy=1&compid=9794098&ns-at=AAEJ7tMQ9isDm4xWz0nN5mUFQ96GBHVVq20h1QrvH-gpYu7Df_4&querytype=subsidiary"
+            + "&subid=" + record.subsidiary.id>
+        <#include _suiteletLocSubDetailsURL />
+            <table style="width: 100%; font-size: 10px;">
+                <!-- note: hide as per advice of leasing dept <tr>
+                    <td colspan="24" align="center" style="font-size: 16px; padding: 0;"><b>SAMPLE BASIC LEASE TERM (SHOULD BE FULLY
+                            SIGNED)</b></td>
+                </tr> -->
+                <tr>
+                    <td colspan="24" align="center" style="font-size: 16px;"><img style="width: 100px; height: 30px;"
+                            src="https://9794098.app.netsuite.com${locationLogoURL?html}" /></td>
+                </tr>
+                <tr>
+                    <td></td> <!-- Image here -->
+                </tr>
+                <tr>
+                    <td colspan="12" align="left" style="padding-bottom: 0; font-weight: bold;">
+                        <#assign contact_person = record.custbody_xrc_lp_contact_person?html?keep_after(":") />
+                        <#if contact_person?keep_after(":")?has_content>
+                            <#assign contact_person = contact_person?keep_after(":") />
+                        </#if>
+                        ${contact_person}
+                    </td>
+                    <td colspan="12" align="right" style="padding-bottom: 0;">${record.trandate}</td>
+                </tr>
+                <tr>
+                    <td colspan="12" align="left" style="padding-bottom: 0; padding-top: 0; font-weight: bold;">${record.custbody_xrc_lp_job_title}</td>
+                </tr>
+                <tr>
+                    <td colspan="24" align="left" style="padding-bottom: 0; font-weight: bold;"><#if record.entity.isperson>${customerTradeName}<#else>${customerLegalName}</#if></td>
+                </tr>
+                <tr>
+                    <td colspan="24" align="left" style="padding-bottom: 0; padding-top: 0; font-weight: bold;">${default_address}</td>
+                </tr>
+            </table>
+            <table style="width: 100%; font-size: 10px; margin-top: 10px;">
+                <tr>
+                    <td align="center" style="font-size: 11px; padding: 0;"><b>BASIC LEASE TERMS</b></td>
+                </tr>
+                <tr>
+                    <td style="padding-bottom: 0; padding-top: 0;">Dear Mr/s. ${record.custbody_xrc_lp_contact_person.lastname},</td>
+                </tr>
+                <tr>
+                    <td>We are pleased to offer you a space at <b>${record.location?upper_case}</b> for <b>${customerLegalName}</b>
+                        , under the Basic Lease Terms (BLT) stipulated
+                        below. Enclosed are the vicinity map and location plan for you reference.
+                    </td>
+                </tr>
+            </table>
+            <table class="terms" style="width: 100%; font-size: 9px; border: 1px solid black;">
+                <tr>
+                    <td class="border_r border_b" colspan="8"><b>Trade Name</b></td>
+                    <td class="border_b" colspan="16"><b>${customerTradeName}</b></td>
+                </tr>
+                <tr>
+                    <td class="border_r border_b" colspan="8"><b>Type of Operation/Concept</b></td>
+                    <td class="border_b" colspan="16"><b>${record.custbody_xrc_operation_type}</b></td>
+                </tr>
+                <tr>
+                    <td class="border_r border_b" colspan="8"><b>Location/Space No.</b></td>
+                    <td class="border_b" colspan="16"><b>${record.custbody_xrc_space_num?keep_after(" ")}</b></td>
+                </tr>
+                <tr>
+                    <td class="border_r border_b" colspan="8"><b>Approximate Floor Area</b></td>
+                    <td class="border_b" colspan="16"><b
+                            style="margin-left: 10px;">${record.custbody_xrc_approx_flr_area?string("###,###,###.00")} sq. m.</b></td>
+                </tr>
+                <tr>
+                    <td class="border_r border_b" colspan="8">
+                        <b>Lease Period</b>
+                    </td>
+                    <td class="border_b" colspan="16">
+                        <b>${record.custbody_xrc_lease_period_descr}</b>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="border_r border_b" colspan="8"><b>Construction Period</b></td>
+                    <td class="border_b" colspan="16"><b>${record.custbody_xrc_const_period_desc}</b></td>
+                </tr>
+                <tr>
+                    <td class="border_r border_b" colspan="8"><b>Turnover date</b></td>
+                    <td class="border_b" colspan="16"><b>
+                            <#if record.custbody_xrc_property_class == "Kiosk">
+                                Not Applicable
+                                <#else>
+                                <#if record.custbody_xrc_turnover_date?has_content>
+                                    ${record.custbody_xrc_turnover_date}
+                                    <#else>
+                                        Not Applicable
+                                </#if>
+                                
+                            </#if>
+                        </b></td>
+                </tr>
+                <tr>
+                    <td class="border_r border_b" colspan="8"><b>Lease Commencement</b></td>
+                    <td class="border_b" colspan="16"><b>
+                            <#if record.custbody_xrc_lease_commencement?has_content>
+                                ${record.custbody_xrc_lease_commencement}<#else>To be determined</#if>
+                        </b></td>
+                </tr>
+                <tr>
+                    <td class="border_r border_b" colspan="8"><b>Lease Expiry</b></td>
+                    <td class="border_b" colspan="16"><b>
+                            <#if record.custbody_xrc_lease_expiry?has_content>${record.custbody_xrc_lease_expiry}<#else>
+                                    To be determined</#if>
+                        </b></td>
+                </tr>
+                <tr>
+                    <td class="border_r border_b" colspan="8"><b>RENT / month</b></td>
+                    <td class="border_b" colspan="16"><b>${record.custbody_xrc_lease_type}</b></td>
+                </tr>
+                <tr>
+                    <td class="border_r border_b" colspan="8"><b>Basic Rent</b></td>
+                    <td class="border_b" colspan="16"><b>${record.custbody_xrc_basicrent_descr}</b></td>
+                </tr>
+                <tr>
+                    <td class="border_r border_b" colspan="8"><b>Percentage of Sales Rent</b></td>
+                    <td class="border_b" colspan="16">
+                        <b>
+                            <#if record.custbody_xrc_lease_type != "Basic Rental Rate/month" && record.custbody_xrc_percentage_rate?length gt 0>
+                                ${record.custbody_xrc_percent_sales_descr}
+                                <#else>
+                                    Not applicable
+                            </#if>
+                        </b>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="border_r border_b" colspan="8"><b>Rental Escalation Per Annum</b></td>
+                    <td class="border_b" colspan="16"><b>${record.custbody_xrc_rental_esc_descr}</b></td>
+                </tr>
+                <tr>
+                    <td class="border_r border_b" colspan="8"><b>Documentary Stamp Tax</b></td>
+                    <td class="border_b" colspan="16"><b>${record.custbody_xrc_doc_stamp_tax}</b></td>
+                </tr>
+                <tr>
+                    <td class="border_r border_b" colspan="8"><b>Common Use Service Area (CUSA)</b></td>
+                    <td class="border_b" colspan="16" style="padding: 0;">
+                        <table width="100%">
+                            <tr>
+                                <td width="50%">
+                                    <b style="font-size: 9px;">
+                                        <#if record.custbody_xrc_lease_period_type == "One-time">
+                                                ${addSpaceAfterPHP(record.custbody_xrc_cusa)} for the whole duration
+                                            <#else>
+                                                ${addSpaceAfterPHP(record.custbody_xrc_cusa)} per month
+                                        </#if>
+                                    </b>
+                                </td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="border_r border_b" colspan="8">&nbsp;</td>
+                    <td class="border_b" colspan="16"><b>CUSA charges will start on first day of construction</b></td>
+                </tr>
+                <tr>
+                    <td class="border_r border_b" colspan="8"><b>CUSA Escalation per Annum</b></td>
+                    <td class="border_b" colspan="16"><b>${record.custbody_xrc_cusa_esc_descr}</b></td>
+                </tr>
+                <tr>
+                    <td class="border_r border_b" colspan="8"><b>Aircon</b></td>
+                    <td colspan="16" class="border_b" style="padding: 0;">
+                        <table width="100%">
+                            <tr>
+                                <td width="50%">
+                                    <b style="font-size: 9px;">
+                                        <#if record.custbody_xrc_aircon == "Not Applicable">
+                                            ${record.custbody_xrc_aircon}
+                                            <#else>
+                                                <#if record.custbody_xrc_lease_period_type == "One-time">
+                                                    ${addSpaceAfterPHP(record.custbody_xrc_aircon_charge)} for the whole duration
+                                                    <#elseif record.custbody_xrc_aircon == "to be charged by the Lessor">
+                                                        ${addSpaceAfterPHP(record.custbody_xrc_aircon_charge)} per month
+                                                    <#else>
+                                                        ${record.custbody_xrc_aircon}
+                                                </#if>
+                                        </#if>
+                                    </b>
+                                </td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="border_r border_b" colspan="8"><b>Feederline</b></td>
+                    <td colspan="16" class="border_b" style="padding: 0;">
+                        <table width="100%">
+                            <tr>
+                                <td width="50%">
+                                    <b style="font-size: 9px;">
+                                        <#if record.custbody_xrc_feederline_sprinkler == "to be charged by the Lessor">
+                                                ${addSpaceAfterPHP(record.custbody_xrc_feederline_charges)}
+                                            <#else>
+                                                ${record.custbody_xrc_feederline_sprinkler}
+                                        </#if>
+                                    </b>
+                                </td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="border_r border_b" colspan="8"><b>Sprinkler System</b></td>
+                    <td colspan="16" class="border_b" style="padding: 0;">
+                        <table width="100%">
+                            <tr>
+                                <td width="50%">
+                                    <b style="font-size: 9px;">
+                                        <#if record.custbody_xrc_sprinkler_system == "to be charged by the Lessor">
+                                                ${addSpaceAfterPHP(record.custbody_xrc_sprinkler_system_charges)}
+                                            <#else>
+                                                ${record.custbody_xrc_sprinkler_system}
+                                        </#if>
+                                    </b>
+                                </td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="border_r border_b" colspan="8"><b>Electrical Charges</b></td>
+                    <td class="border_b" colspan="16" style="padding: 0;">
+                        <table width="100%">
+                            <tr>
+                                <td width="100%">
+                                    <b style="font-size: 9px;">
+                                        <#if record.custbody_xrc_electrical_charges == "Sub-metered or Minimum whichever is higher">
+                                                Sub-metered or Minimum ${addSpaceAfterPHP(record.custbody_xrc_min_elect_charges)} per month whichever is higher
+                                            <#elseif record.custbody_xrc_electrical_charges == "Minimum">
+                                                ${addSpaceAfterPHP(record.custbody_xrc_min_elect_charges)} per month
+                                            <#else>
+                                                ${record.custbody_xrc_electrical_charges}
+                                        </#if>
+                                    </b>
+                                </td>
+                            </tr> 
+                        </table>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="border_r border_b" colspan="8"><b>Water Charges</b></td>
+                    <td class="border_b" colspan="16" style="padding: 0;">
+                        <table width="100%">
+                            <tr>
+                                <td width="100%">
+                                    <b style="font-size: 9px;">
+                                        <#if record.custbody_xrc_water_charges == "Sub-metered or Minimum whichever is higher">
+                                                Sub-metered or Minimum ${addSpaceAfterPHP(record.custbody_xrc_min_elect_charges)} per month whichever is higher
+                                            <#elseif record.custbody_xrc_water_charges == "Minimum">
+                                                ${addSpaceAfterPHP(record.custbody_xrc_min_water_charges)} per month
+                                            <#else>
+                                                ${record.custbody_xrc_water_charges}
+                                        </#if>
+                                    </b>
+                                </td>
+                            </tr> 
+                        </table>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="border_r border_b" colspan="8"><b>Security Deposit</b></td>
+                    <td class="border_b" colspan="16"><b>${addSpaceAfterPHP(record.custbody_xrc_security_deposit)}</b></td>
+                </tr>
+                <tr>
+                    <td class="border_r border_b" colspan="8">&nbsp;</td>
+                    <td class="border_b" colspan="16">${record.custbody_xrc_sec_dep_description?replace('\n', '<br />')}</td>
+                </tr>
+                <tr>
+                    <td class="border_r border_b" colspan="8"><b>Advance Rent</b></td>
+                    <td class="border_b" colspan="16"><b>${addSpaceAfterPHP(record.custbody_xrc_advance_rent)}</b></td>
+                </tr>
+                <tr>
+                    <td class="border_r border_b" colspan="8">&nbsp;</td>
+                    <td class="border_b" colspan="16">${record.custbody_xrc_adv_rent_descript}</td>
+                </tr>
+                <tr>
+                    <td class="border_r border_b" colspan="8"><b>Construction Bond</b></td>
+                    <td class="border_b" colspan="16"><b>${addSpaceAfterPHP(record.custbody_xrc_construction_bond)}</b></td>
+                </tr>
+                <tr>
+                    <td class="border_r border_b" colspan="8">&nbsp;</td>
+                    <td class="border_b" colspan="16">${record.custbody_xrc_constr_bond_descript}</td>
+                </tr>
+                <tr>
+                    <td class="border_r border_b" colspan="8"><b>Marketing Support Fund</b></td>
+                    <td class="border_b" colspan="16"><b>
+                            <#if record.custbody_xrc_mktg_supp_fund?length gt 0>${addSpaceAfterPHP(record.custbody_xrc_mktg_supp_fund)} per Annum
+                                <#else>Not applicable</#if>
+                        </b></td>
+                </tr>
+                <tr>
+                    <td class="border_r border_b" colspan="8"><b>Electrical Bill Deposit</b></td>
+                    <td class="border_b" colspan="16"><b>
+                            <#if record.custbody_xrc_electric_bill_dep?length gt 0>
+                                ${addSpaceAfterPHP(record.custbody_xrc_electric_bill_dep)}<#else>Not applicable</#if>
+                        </b></td>
+                </tr>
+                <tr>
+                    <td class="border_r border_b" colspan="8"><b>Electrical Meter Deposit</b></td>
+                    <td class="border_b" colspan="16"><b>
+                            <#if record.custbody_xrc_elec_meter_dep?length gt 0>${addSpaceAfterPHP(record.custbody_xrc_elec_meter_dep)}
+                                <#else>Not applicable</#if>
+                        </b></td>
+                </tr>
+                <tr>
+                    <td class="border_r border_b" colspan="8"><b>Water Bill Deposit</b></td>
+                    <td class="border_b" colspan="16">
+                        <b>
+                            <#if record.custbody_xrc_water_bill_dep?length gt 0>${addSpaceAfterPHP(record.custbody_xrc_water_bill_dep)}
+                                <#else>Not applicable</#if>
+                        </b>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="border_r border_b" colspan="8"><b>Water Meter Deposit</b></td>
+                    <td class="border_b" colspan="16">
+                        <b>
+                            <#if record.custbody_xrc_water_meter_dep?length gt 0>${addSpaceAfterPHP(record.custbody_xrc_water_meter_dep)}
+                                <#else>Not applicable</#if>
+                        </b>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="border_r border_b" colspan="8"><b>LPG Bill Deposit</b></td>
+                    <td class="border_b" colspan="16"><b>
+                            <#if record.custbody_xrc_lpg_bill_dep?length gt 0>${addSpaceAfterPHP(record.custbody_xrc_lpg_bill_dep)}<#else>
+                                    Not applicable</#if>
+                        </b></td>
+                </tr>
+                <tr>
+                    <td class="border_r" colspan="8"><b>LPG Meter Deposit</b></td>
+                    <td colspan="16"><b>
+                            <#if record.custbody_xrc_lpg_meter_dep?length gt 0>${addSpaceAfterPHP(record.custbody_xrc_lpg_meter_dep)}
+                                <#else>Not applicable</#if>
+                        </b></td>
+                </tr>
+            </table>
+            <table class="notes border_r border_b border_l" style="width: 100%; font-size: 7px;">
+                <tr>
+                    <td><b>Notes:</b></td>
+                </tr>
+                <tr>
+                    <td>
+                        (1) For Lessees subject to Percentage Rent, Daily Sales Report should be submitted after every
+                        mall
+                        hour closing. Consequently, certified Monthly Sales Report
+                        should be submitted no later than 5th day of the following month.
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        (2) CUSA to start upon the Lessor's handover of the leased space to the Lessee.
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        (3) All amounts herein stated  are exclusive of Value Added Tax (VAT) and other taxes, all of which shall be for the Account of the Lessee. Monthly rentals and utility charges should be paid on or before the due date without need of
+                        demand. All unpaid charges after the due date
+                        shall be subjected to an interest rate of 3% per month or fraction of a month. The lessee shall
+                        likewise be liable to pay a penalty charge of 3%
+                        per month of the overdue and unpaid amount to be computed from the 1st day of the month of
+                        delinquency until paid in full.
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        (4) Security Deposit, Advance Rent, Construction Bond, and other deposits should be paid
+                        immediately
+                        upon receipt of Statement of Account and is
+                        required prior to the release of Permit to Construct/Operate. Security Deposit shall be adjusted
+                        for
+                        any increase in the Basic/Fixed rental rate
+                        upon renewal.
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        (5) Security Deposit shall be forfeited automatically should (a) the Lessee cancels the signed
+                        Basic
+                        Lease Terms unilaterally (b) the Lessee terminates
+                        the Lease Contract for whatever reason prior to the expiration date of the lease (c) the Lessee
+                        fail
+                        to occupy and commence within the specified
+                        commencement date
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        (6) Duly signed Lease Contract should be submitted to Lessor's office two (2) weeks upon its
+                        issuance. Lessee's store/opening start of operation,
+                        including continous operation past lease expiry date, will signify Lessee's full acceptance of
+                        the
+                        terms and conditions stipulated in the Basic Lease
+                        Terms and Lease Contract. In the absence of a Renewal Contract, all terms and conditions shall
+                        revert to the Mother Lease Contract.
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        (7) Lease shall ensure installation of tarpaulin or board up sticker, following the mall's
+                        guidelines in terms of design and logo, prior to construction
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        (8) Lessee to secure Insurance Policy (CGLI - Fire) prior to start of store operations. Minimum
+                        coverage is P500,000.00
+                        <span>4.1 Insurance</span><span>Contractor's All Risk Insurance (CARI) - during Construction
+                            Period</span><br />
+                        <span>Minimum of Php500,000.00 coverage</span>&nbsp;<span>Comprehensive General Liability Insurance
+                            (CGLI)
+                            - Fire - prior to operation</span>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        (9) Spaces are being offered simultaneously. Confirmation will be processed on a first come,
+                        first
+                        served basis, subject to final approval of the Lessor.
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        (10) Bottled water. All tenants under <b>${legalName?upper_case}</b> are required to sell  and support
+                        to
+                        the selling of XentroMall Bottled water to its customers.
+                    </td>
+                </tr>
+            </table>
+            <table style="width: 100%; font-size: 9px;">
+                <tr>
+                    <td colspan="24">
+                        If you find the foregoing acceptable, please affix your signature on the space provided below
+                        and return the original copy to our office on or before 
+                        <b>
+                            <#assign baseDate = record.trandate>
+                            <#assign daysToAdd = 14>
+                            <#assign millisInADay = 1000 * 60 * 60 * 24>
+                            <#assign newTimestamp = baseDate?long + (daysToAdd * millisInADay)>
+                            <#assign newDate = newTimestamp?number_to_date>
+                            ${newDate?string.long}
+                        </b>.
+                        The parties' contractual relationship shall be governed by this BLT and/or the Contract of Lease
+                        which the parties will execute. Please feel free to call the undersigned at
+                        <b>${phone}</b> if have any questions regarding this BLT or if you wish to conduct an
+                        ocular inspection of the area. <br /><br />
+                        We look forward to a long and fruitful business relation with you. Thank you.
+                    </td>
+                </tr>
+                <tr>
+                    <td>&nbsp;</td>
+                </tr>
+                <tr style="padding-bottom: 0; padding-top: 0;">
+                    <td colspan="12" style="padding-bottom: 0; padding-top: 0;">Very truly yours,</td>
+                    <td colspan="12" style="padding-bottom: 0; padding-top: 0;"><b>CONFORME:</b></td>    
+                </tr>
+                <tr style="padding-bottom: 0; padding-top: 0;">
+                    <td colspan="12" style="padding-bottom: 0; padding-top: 0;"><b>${legalName?upper_case}</b></td>
+                    <#if !record.entity.isperson>
+                        <td colspan="12" style="padding-bottom: 0; padding-top: 0;"><b>${customerLegalName?upper_case}</b></td>
+                        <#else>
+                            <td colspan="12">&nbsp;</td>
+                    </#if>
+                </tr>
+                <tr>
+                    <td>&nbsp;</td>
+                </tr>
+                <tr style="padding-bottom: 0; padding-top: 0;">
+                    <td colspan="12" style="padding-bottom: 0; padding-top: 0;"><b>${record.custbody_xrc_approver1?keep_after(" ")}</b></td>
+                    <td colspan="12" style="padding-bottom: 0; padding-top: 0;">
+                        <b>
+                            <#assign contact_person = record.custbody_xrc_lp_contact_person?html?keep_after(":") />
+                            <#if contact_person?keep_after(":")?has_content>
+                                <#assign contact_person = contact_person?keep_after(":") />
+                            </#if>
+                            ${contact_person}
+                        </b>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="12" style="padding-bottom: 0; padding-top: 0;">Leasing Manager</td>
+                    <td colspan="12" style="padding-bottom: 0; padding-top: 0;">${record.custbody_xrc_lp_job_title}</td>
+                </tr>
+                <tr style="padding-bottom: 0; padding-top: 0;">
+                    <td>&nbsp;</td>
+                </tr>
+                <tr style="padding-bottom: 0; padding-top: 0;">
+                    <td colspan="24" style="padding-bottom: 0; padding-top: 0;"><b>KRISTIE IRISH CLAIRE D. ASUNCION</b></td>
+                </tr>
+                <tr style="padding-bottom: 0; padding-top: 0;">
+                    <td colspan="24" style="padding-bottom: 0; padding-top: 0;">Assistant Vice President - Leasing</td>
+                </tr>
+                <tr style="padding-bottom: 0; padding-top: 0;">
+                    <td>&nbsp;</td>
+                </tr>
+                <tr class="border_t border_b">
+                    <td colspan="16">Manila Office: ${address}</td>
+                    <td colspan="8" align="right">Tel. No. ${phone}&nbsp;&nbsp;&nbsp;&nbsp;Fax ${fax}</td>
+                </tr>
+            </table>
+
+            <#function addSpaceAfterPHP amount>
+                <#return amount?replace("PHP", "PHP " )>
+            </#function>
+    </body>
+</pdf>  
