@@ -504,6 +504,8 @@ define(['N/record', 'N/ui/serverWidget', 'N/search', 'N/runtime'],
 
             var is_user_dept_head = isUserDepartmentHead(newRecord, currentUser);
 
+            log.debug('is_user_dept_head', is_user_dept_head);
+
             if (is_user_dept_head && !approval_1) {
 
                 showApprovalButtons(form, 'custrecord_xrc_fundreq_approval1');

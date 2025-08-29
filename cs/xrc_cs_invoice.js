@@ -82,6 +82,8 @@ define(["N/record", "N/currentRecord", "N/runtime", "N/search"], function (recor
     const FOR_APPROVAL_FLD_ID = "custbody_xrc_for_approval";
     const REJECTED_FLD_ID = "custbody1";
 
+    const INTEREST_CHARGE_ITEM_ID = '5249';
+
     var g_duedate = null;
     var g_isSubmitForApprovalBtnClick = null;
     var g_isApproveBtnClick = null;
@@ -129,10 +131,39 @@ define(["N/record", "N/currentRecord", "N/runtime", "N/search"], function (recor
     function fieldChanged(context) {
         var currentRecord = context.currentRecord;
 
+        var sublistId = context.sublistId;
+
         var fieldId = context.fieldId;
 
         if (fieldId === "location") {
             console.log(currentRecord.getValue(fieldId));
+        } else if (sublistId === "item" && fieldId === 'quantity') {
+
+            var item = currentRecord.getCurrentSublistValue({
+                sublistId: 'item',
+                fieldId: 'item',
+            });
+
+            if (item === INTEREST_CHARGE_ITEM_ID) {
+
+                var qty = currentRecord.getCurrentSublistValue({
+                    sublistId: 'item',
+                    fieldId: 'quantity',
+                });
+
+                var rate = currentRecord.getCurrentSublistValue({
+                    sublistId: 'item',
+                    fieldId: 'rate',
+                });
+
+                currentRecord.setCurrentSublistValue({
+                    sublistId: 'item',
+                    fieldId: 'amount',
+                    value: rate + (rate * (qty / 100)),
+                });
+
+            }
+
         }
     }
 

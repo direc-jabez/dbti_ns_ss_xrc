@@ -5,10 +5,13 @@
  * Created by: DBTI - Ricky Eredillas Jr
  * Date: Aug 21, 2024
  * 
+ * Updated by: DBTI - John Jabez Serrano
+ * Date: July 25, 2025
+ * 
  */
-define(['N/record', 'N/runtime'],
+define(['N/record', 'N/runtime', 'N/ui/serverWidget'],
 
-    function (record, runtime) {
+    function (record, runtime, serverWidget) {
 
         const APPROVAL_STATUS_FIELD_ID = 'approvalstatus';
         const PENDING_APPROVAL_STATUS_ID = '1';
@@ -25,6 +28,9 @@ define(['N/record', 'N/runtime'],
         const PREPARED_BY_FIELD_ID = 'custbody_xrc_prepared_by';
         const DATE_FIELD_ID = 'trandate';
         const TOTAL_FIELD_ID = 'total';
+
+        const ADDITIONAL_SEC_DEP_FIELD_ID = 'custbody_xrc_add_secdep';
+        const PAID_SEC_DEP_FIELD_ID = 'custbody_xmdi_paid_secdep'
 
         function beforeLoad(context) {
 
@@ -77,6 +83,20 @@ define(['N/record', 'N/runtime'],
 
                         }
                     }
+                }
+
+                let additionalSecDepositValue = parseInt(newRecord.getValue({ fieldId: ADDITIONAL_SEC_DEP_FIELD_ID }) || 0);
+
+                let paidSecDepositValue = parseInt(newRecord.getValue({ fieldId: PAID_SEC_DEP_FIELD_ID }) || 0);
+
+                if (additionalSecDepositValue > paidSecDepositValue) {
+
+                    form.addButton({
+                        id: 'custpage_xrc_make_cust_deposit',
+                        label: 'Deposit',
+                        functionName: 'onDepositBtnClick()'
+                    });
+
                 }
 
                 form.clientScriptModulePath = './xrc_cs_invoice.js';
@@ -167,7 +187,7 @@ define(['N/record', 'N/runtime'],
         }
 
         return {
-            // beforeLoad: beforeLoad,
+            beforeLoad: beforeLoad,
             afterSubmit: afterSubmit,
         };
     }

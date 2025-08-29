@@ -174,7 +174,7 @@
                 <td colspan="2">&nbsp;</td>
                 <td colspan="2">&nbsp;</td>
                 <td colspan="2"><strong>Basic CUSA / CUSA :</strong></td>
-                <td colspan="2">PHP ${getFormattedAmount(lease_proposal_cusa?number)}</td>
+                <td colspan="2"><#if lease_proposal_cusa?has_content>PHP ${getFormattedAmount(lease_proposal_cusa?number)}</#if></td>
                 <td colspan="2"><strong>Rental Escalation Rate :</strong></td>
                 <td colspan="2">${lease_proposal_rental_escalation}% per annum</td>
             </tr>

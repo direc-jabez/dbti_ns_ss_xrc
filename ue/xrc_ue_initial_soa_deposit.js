@@ -367,7 +367,6 @@ define(['N/record', 'N/ui/serverWidget', 'N/search', 'N/runtime'],
                     });
 
                 }
-
             }
 
         }
@@ -572,6 +571,10 @@ define(['N/record', 'N/ui/serverWidget', 'N/search', 'N/runtime'],
                         });
 
                         total_payment += parseFloat(value.payment);
+
+                    } else {
+
+                        log.debug('flag', false);
 
                     }
 

@@ -468,7 +468,7 @@ define(['N/record', 'N/redirect', 'N/search', 'N/runtime', 'N/email', 'N/format'
                         "custpage_billing_date": so_rec.getValue(LEASE_EXPIRY_FIELD_ID).toLocaleDateString(),
                         "custpage_rental_escalation": i > 12 ? rental_escalation : null,
                         "custpage_fixed_basic_rent": pro_rated_rent,
-                        "custpage_escalated_basic_rent": pro_rated_rent + (pro_rated_rent * rental_escalation),
+                        "custpage_escalated_basic_rent": year > 1 ? (pro_rated_rent + (pro_rated_rent * (rental_escalation / 100))) : pro_rated_rent,
                         "custpage_fixed_cusa": fixed_cusa,
                         "custpage_cusa_escalation": i > 12 ? cusa_escalation : null,
                         "custpage_escalated_cusa": ec || fixed_cusa,
@@ -855,25 +855,25 @@ define(['N/record', 'N/redirect', 'N/search', 'N/runtime', 'N/email', 'N/format'
 
             var body = type === NOTIF_TYPE_REMINDER ?
                 `Good day,<br /><br />
-                    The Initial SOA Deposit is ready for your review and approval.<br /><br />
-                    Details:<br /><br />
-                    Reference Number: <a href=https://9794098.app.netsuite.com/app/common/custom/custrecordentry.nl?rectype=1228&id=${id}><b>${tran_id}</b></a><br />
-                    Please review the details and approve at your earliest convenience. Let me know if you have any questions or require additional information.<br /><br />
-                    Best regards,`
+                        The Initial SOA Deposit is ready for your review and approval.<br /><br />
+                        Details:<br /><br />
+                        Reference Number: <a href=https://9794098.app.netsuite.com/app/common/custom/custrecordentry.nl?rectype=1228&id=${id}><b>${tran_id}</b></a><br />
+                        Please review the details and approve at your earliest convenience. Let me know if you have any questions or require additional information.<br /><br />
+                        Best regards,`
                 : type === NOTIF_TYPE_APPROVED ?
                     `Good day,<br /><br />
-                    The Initial SOA Deposit has been approved.<br /><br />
-                    Details:<br /><br />
-                    Reference Number: <a href=https://9794098.app.netsuite.com/app/common/custom/custrecordentry.nl?rectype=1228&id=${id}><b>${tran_id}</b></a><br />
-                    If you have any questions, feel free to reach out.<br /><br />
-                    Best regards,`
+                        The Initial SOA Deposit has been approved.<br /><br />
+                        Details:<br /><br />
+                        Reference Number: <a href=https://9794098.app.netsuite.com/app/common/custom/custrecordentry.nl?rectype=1228&id=${id}><b>${tran_id}</b></a><br />
+                        If you have any questions, feel free to reach out.<br /><br />
+                        Best regards,`
                     :
                     `Good day,<br /><br />
-                    The Initial SOA Deposit has been reviewed and rejected.<br /><br />
-                    Details:<br /><br />
-                    Reference Number: <a href=https://9794098.app.netsuite.com/app/common/custom/custrecordentry.nl?rectype=1228&id=${id}><b>${tran_id}</b></a><br />
-                    If you have any questions or need further clarification, feel free to reach out.<br /><br />
-                    Best regards,`
+                        The Initial SOA Deposit has been reviewed and rejected.<br /><br />
+                        Details:<br /><br />
+                        Reference Number: <a href=https://9794098.app.netsuite.com/app/common/custom/custrecordentry.nl?rectype=1228&id=${id}><b>${tran_id}</b></a><br />
+                        If you have any questions or need further clarification, feel free to reach out.<br /><br />
+                        Best regards,`
                 ;
 
             log.debug('body', body);

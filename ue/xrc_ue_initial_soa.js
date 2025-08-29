@@ -14,6 +14,7 @@ define(['N/record', 'N/runtime'],
         const APPROVAL_STATUS_FIELD_ID = 'custrecord_xrc_approval_status4';
         const PENDING_APPROVAL_STATUS_ID = '1';
         const APPROVED_STATUS_ID = '2';
+        const PAID_STATUS_ID = '3';
         const REJECTED_STATUS_ID = '4';
         const LEASE_PROPOSAL_FIELD_ID = 'custrecord_xrc_lease_proposal';
         const INITIAL_SOA_FIELD_ID = 'custbody_xrc_initial_soa';
@@ -23,6 +24,7 @@ define(['N/record', 'N/runtime'],
         const APPROVAL_TWO_FIELD_ID = 'custrecord_xrc_isoa_approval2';
         const APPROVAL_THREE_FIELD_ID = 'custrecord_xrc_isoa_approval3';
         const TOTAL_AMOUNT_DUE_FIELD_ID = 'custrecord_total_amount_due';
+        const UNPAID_BALANCE_FIELD_ID = 'custrecord_xrc_isoa_unpaid_bal';
 
 
         function beforeLoad(context) {
@@ -42,6 +44,8 @@ define(['N/record', 'N/runtime'],
                 var prepared_by = newRecord.getValue(PREPARED_BY_FIELD_ID);
 
                 var total_amount_due = newRecord.getValue(TOTAL_AMOUNT_DUE_FIELD_ID);
+
+                var unpaid_balance = newRecord.getValue(UNPAID_BALANCE_FIELD_ID);
 
                 log.debug('total_amount_due', total_amount_due);
 
@@ -113,7 +117,7 @@ define(['N/record', 'N/runtime'],
 
                     }
 
-                } else if (approval_status === APPROVED_STATUS_ID && total_amount_due && (currentUser.role === 1416 || currentUser.role === 3)) {
+                } else if ((approval_status === APPROVED_STATUS_ID || approval_status === PAID_STATUS_ID) && unpaid_balance && (currentUser.role === 1416 || currentUser.role === 3)) {
 
                     // Showing Deposit button on Initial SOA approval
                     form.addButton({
@@ -146,6 +150,7 @@ define(['N/record', 'N/runtime'],
                         id: lease_proposal_id,
                         values: {
                             [INITIAL_SOA_FIELD_ID]: newRecord.id,
+                            ["custrecord_xrc_isoa_unpaid_bal"]: newRecord.getValue("custrecord_total_amount_due"),
                         },
                         options: {
                             ignoreMandatoryFields: true
