@@ -1,0 +1,962 @@
+<?xml version="1.0"?>
+<!DOCTYPE pdf PUBLIC "-//big.faceless.org//report" "report-1.1.dtd">
+<#setting date_format="MM/dd/yyyy">
+    <#assign subcurrencysymbol=record.custbody_psg_sal_custpay_sub_currency.symbol />
+    <#assign NEGATIVE_PARENTHESIS="1"> <!--id for parenthesis in select user pref-->
+        <#function formatTIN rawTIN hasBranchCode=false>
+            <#if !rawTIN?? || rawTIN?length==0>
+                <#return ''>
+            </#if>
+            <#assign tinLength=rawTIN?length>
+                <#assign formattedTIMLength=9>
+                    <#assign sanitizedTIN=''>
+                        <#assign formattedTIN=''>
+                            <#assign numChars=['0', '1' , '2' , '3' , '4' , '5' , '6' , '7' , '8' , '9' ]>
+                                <#assign hypenCounter=0>
+                                    <#assign maxTINLength=14>
+
+                                        <#list 1..tinLength as i>
+                                            <#assign tinChar=rawTIN[i-1]>
+                                                <#if numChars?seq_contains(tinChar)>
+                                                    <#assign sanitizedTIN +=tinChar>
+                                                </#if>
+                                        </#list>
+
+                                        <#-- sanitizedTIN only contains numeric characters -->
+
+                                            <#if !hasBranchCode && sanitizedTIN?length==9>
+                                                <#assign sanitizedTIN=sanitizedTIN + '000'>
+                                            </#if>
+
+                                            <#if hasBranchCode && sanitizedTIN?length gt 9>
+                                                <#assign sanitizedTIN=sanitizedTIN?substring(0, 9)>
+                                            </#if>
+
+                                            <#list 1..sanitizedTIN?length as j>
+                                                <#assign tinChar=sanitizedTIN[j-1]>
+                                                    <#if maxTINLength gt 0>
+                                                        <#assign formattedTIN +=tinChar>
+                                                            <#if hypenCounter < 3 && j%3==0>
+                                                                <#assign formattedTIN +='-'>
+                                                                    <#assign hypenCounter++>
+                                                            </#if>
+                                                            <#assign maxTINLength-->
+                                                    </#if>
+                                            </#list>
+
+                                            <#return formattedTIN>
+        </#function>
+
+        <#function formatAmount numberAmount="">
+            <#if numberAmount?string?has_content>
+                <#assign formattedNumber=numberAmount?string["#,##0.00"]>
+                    <#if record.custpage_negative_number_format?string==NEGATIVE_PARENTHESIS>
+                        <!--convert to currency format-->
+                        <#if formattedNumber?starts_with("-")>
+                            <#assign formattedNumber=formattedNumber?replace("-", "(" ) + ")">
+                        </#if>
+                    </#if>
+                    <#return formattedNumber>
+                        <#else>
+                            <#return "">
+            </#if>
+        </#function>
+        <pdf>
+            <#if (record.custpage_sal_header_obj)?has_content>
+                <#assign headerObj=record.custpage_sal_header_obj?eval>
+            </#if>
+            <#if (record.custpage_sal_footer_obj)?has_content>
+                <#assign footerObj=record.custpage_sal_footer_obj?eval>
+            </#if>
+            <#if (record.custpage_psg_sal_size_orientation)?has_content>
+                <#assign pagesize=record.custpage_psg_sal_size_orientation />
+                <#else>
+                    <#assign pagesize="letter" />
+            </#if>
+
+            <head>
+                <#if record.custpage_is_suitetax>
+                    <#stop "Unable to print the transaction because the custom template used does not support SuiteTax. For more information, see help topic Philippines Localization." />
+                </#if>
+                <link name="NotoSans" type="font" subtype="truetype" src="${nsfont.NotoSans_Regular}"
+                    src-bold="${nsfont.NotoSans_Bold}" src-italic="${nsfont.NotoSans_Italic}"
+                    src-bolditalic="${nsfont.NotoSans_BoldItalic}" bytes="2" />
+                <#if .locale=="zh_CN">
+                    <link name="NotoSansCJKsc" type="font" subtype="opentype" src="${nsfont.NotoSansCJKsc_Regular}"
+                        src-bold="${nsfont.NotoSansCJKsc_Bold}" bytes="2" />
+                    <#elseif .locale=="zh_TW">
+                        <link name="NotoSansCJKtc" type="font" subtype="opentype" src="${nsfont.NotoSansCJKtc_Regular}"
+                            src-bold="${nsfont.NotoSansCJKtc_Bold}" bytes="2" />
+                        <#elseif .locale=="ja_JP">
+                            <link name="NotoSansCJKjp" type="font" subtype="opentype"
+                                src="${nsfont.NotoSansCJKjp_Regular}" src-bold="${nsfont.NotoSansCJKjp_Bold}"
+                                bytes="2" />
+                            <#elseif .locale=="ko_KR">
+                                <link name="NotoSansCJKkr" type="font" subtype="opentype"
+                                    src="${nsfont.NotoSansCJKkr_Regular}" src-bold="${nsfont.NotoSansCJKkr_Bold}"
+                                    bytes="2" />
+                                <#elseif .locale=="th_TH">
+                                    <link name="NotoSansThai" type="font" subtype="opentype"
+                                        src="${nsfont.NotoSansThai_Regular}" src-bold="${nsfont.NotoSansThai_Bold}"
+                                        bytes="2" />
+                </#if>
+                <macrolist>
+                    <macro id="watermark">
+                        <#if record.custpage_psg_sal_ph_print_status=="DRAFT">
+                            <p id="watermarkbody" rotate="-45" valign="middle" align="center" font-size="200px"
+                                font-family="Verdana, Arial, Helvetica, sans-serif" style="color: #e3e3e3">DRAFT</p>
+                        </#if>
+                    </macro>
+                </macrolist>
+                <style type="text/css">
+                    * {
+                        <#if .locale=="zh_CN">font-family: NotoSans, NotoSansCJKsc, sans-serif;
+                        <#elseif .locale=="zh_TW">font-family: NotoSans, NotoSansCJKtc, sans-serif;
+                        <#elseif .locale=="ja_JP">font-family: NotoSans, NotoSansCJKjp, sans-serif;
+                        <#elseif .locale=="ko_KR">font-family: NotoSans, NotoSansCJKkr, sans-serif;
+                        <#elseif .locale=="th_TH">font-family: NotoSans, NotoSansThai, sans-serif;
+                        <#else>font-family: NotoSans, sans-serif;
+                        </#if>
+                    }
+
+                    table {
+                        font-size: 9pt;
+                        table-layout: fixed;
+                    }
+
+                    th {
+                        font-weight: bold;
+                        font-size: 8pt;
+                        vertical-align: middle;
+                        padding: 5px 6px 3px;
+                        background-color: #e3e3e3;
+                        color: #333333;
+                    }
+
+                    td {
+                        padding: 4px 6px;
+                    }
+
+                    td p {
+                        align: left
+                    }
+
+                    b {
+                        font-weight: bold;
+                        color: #333333;
+                    }
+
+                    table.header td {
+                        padding: 0;
+                        font-size: 10pt;
+                    }
+
+                    table.footer td {
+                        padding: 0;
+                        font-size: 8pt;
+                    }
+
+                    table.itemtable th {
+                        padding-bottom: 10px;
+                        padding-top: 10px;
+                    }
+
+                    table.itemtable tr.thline1 th {
+                        padding-bottom: 0px;
+                    }
+
+                    table.itemtable tr.thline2 th {
+                        padding-top: 0px;
+                    }
+
+                    table.body td {
+                        padding-top: 2px;
+                    }
+
+                    table.total {
+                        page-break-inside: avoid;
+                    }
+
+                    tr.totalrow {
+                        background-color: #e3e3e3;
+                        line-height: 200%;
+                    }
+
+                    td.totalboxtop {
+                        font-size: 12pt;
+                        background-color: #e3e3e3;
+                    }
+
+                    td.addressheader {
+                        font-size: 8pt;
+                        padding-top: 6px;
+                        padding-bottom: 2px;
+                    }
+
+                    td.address {
+                        padding-top: 0;
+                    }
+
+                    td.footermessage {
+                        word-break: break-all;
+                    }
+
+                    td.totalboxmid {
+                        font-size: 28pt;
+                        padding-top: 20px;
+                        background-color: #e3e3e3;
+                    }
+
+                    td.remittance {
+                        padding: 0;
+                    }
+
+                    span.title {
+                        font-size: 22pt;
+                    }
+
+                    span.strongText {
+                        font-size: 9pt;
+                        font-weight: bold;
+                    }
+
+                    span.number {
+                        font-size: 16pt;
+                    }
+
+                    span.itemname {
+                        font-weight: bold;
+                    }
+
+                    hr {
+                        width: 100%;
+                        color: #d3d3d3;
+                        background-color: #d3d3d3;
+                        height: 1px;
+                    }
+
+                    pre {
+                        white-space: normal;
+                        width: 100%;
+                    }
+
+                    p.watermark {
+                        color: #e3e3e3;
+                        font-size: 1rem;
+                        vertical-align: middle;
+                        align: center;
+                        text-align: center;
+                        font-family: Verdana, Arial, Helvetica, sans-serif;
+                    }
+
+                    .headline {
+                        font-family: Helvetica, sans-serif;
+                        font-size: 10pt;
+                        font-weight: bold;
+                    }
+
+                    remittance {
+                        page-break-after: avoid;
+                    }
+
+                    hr.dotted {
+                        margin-left: -9in;
+                        border: none;
+                        border-top: 1px dotted black;
+                        color: #ffffff80;
+                        background-color: #ffffff80;
+                        width: 200%;
+                    }
+
+                    .border_t {
+                        border-top: 1px solid black;
+                    }
+
+                    .border_r {
+                        border-right: 1px solid black;
+                    }
+
+                    .border_b {
+                        border-bottom: 1px solid black;
+                    }
+
+                    .border_l {
+                        border-left: 1px solid black;
+                    }
+                </style>
+            </head>
+
+            <body header="nlheader" header-height="182pt" background-macro="watermark" footer="nlfooter"
+                footer-height="10pt" padding="0.2in 0.2in 0.2in 0.2in" size="${pagesize}">
+                <#assign account_name='' />
+                <#assign bank_branch='' />
+                <#assign account_number='' />
+                <#assign legalName='' />
+                <#assign address='' />
+                <#assign phone='' />
+                <#assign fax='' />
+                <#assign payments_and_credits='' />
+                <#assign default_address ='' />
+
+                <#assign
+                    _suiteletLocSubDetailsSuiteletURL_LocationDetails="https://9794098.extforms.netsuite.com/app/site/hosting/scriptlet.nl?script=1529&deploy=1&compid=9794098&ns-at=AAEJ7tMQ9isDm4xWz0nN5mUFQ96GBHVVq20h1QrvH-gpYu7Df_4&querytype=location&locid="
+                    + record.location.id + "&custid=" + record.entity.id>
+                    <#include _suiteletLocSubDetailsSuiteletURL_LocationDetails />
+
+                    <#assign
+                        _suiteletLocSubDetailsSuiteletURL_SubsidiaryDetails="https://9794098.extforms.netsuite.com/app/site/hosting/scriptlet.nl?script=1529&deploy=1&compid=9794098&ns-at=AAEJ7tMQ9isDm4xWz0nN5mUFQ96GBHVVq20h1QrvH-gpYu7Df_4&querytype=subsidiary&subid="
+                        + record.subsidiary.id + "&custid=" + record.entity.id>
+                        <#include _suiteletLocSubDetailsSuiteletURL_SubsidiaryDetails />
+                
+                        <table style="width: 100%; font-size: 16px;">
+                            <tr>
+                                <td align="right"><b>BILLING INVOICE</b></td>
+                            </tr>
+                            <tr>
+                                <td align="right"><b>No. : ${record.tranid}</b></td>
+                            </tr>
+                        </table>
+                        <table style="width: 100%; border: 1px solid black; background-color: #d3d3d3;">
+                            <tr>
+                                <td align="right">Statement Date : ${record.trandate}</td>
+                            </tr>
+                            <tr>
+                                <td align="right">DUE Date : ${record.duedate}</td>
+                            </tr>
+                            <tr>
+                                <td align="left">To : ${record.entity?keep_after(" ")}</td>
+                            </tr>
+                            <tr>
+                                <td align="left">Customer Account ID : </td>
+                            </tr>
+                            <tr>
+                                <td align="left">CUSTOMER BANK ACCT. CODE : </td>
+                            </tr>
+                            <tr>
+                                <td align="left">Address : ${record.billaddress?html?split("<br />"?html)?join(", ")}
+                                </td>
+                            </tr>
+                        </table>
+                        <table class="border_r border_l" style="width: 100%; font-size: 10px;">
+                            <tr>
+                                <td colspan="4"><b>ITEM</b></td>
+                                <td colspan="5"><b>DESCRIPTION</b></td>
+                                <td colspan="2" align="right"><b>QTY</b></td>
+                                <td align="right"><b>UNIT</b></td>
+                                <td colspan="4" align="right"><b>RATE</b></td>
+                                <td colspan="4" align="right"><b>AMOUNT</b></td>
+                                <td colspan="4" align="center"><b>VAT</b></td>
+                                <td colspan="4" align="right"><b>WHT CODE</b></td>
+                                <td colspan="4" align="right"><b>WHT RATE</b></td>
+                                <td colspan="4" align="right"><b>WHT AMT</b></td>
+                                <td colspan="5" align="right"><b>GROSS AMT</b></td>
+                            </tr>
+                        </table>
+                        <table class="border_r border_b border_l" style="width: 100%; font-size: 10px;">
+                            <tr>
+                                <td colspan="41"><b>Charges for the Month of ${record.trandate?string.long?split(" ")[0]}, ${record.trandate?string.long?split(" ")[2]}</b></td>
+                            </tr>
+                            <#assign netTotal = 0 />
+                            <#assign totalChargesGrossAmt = 0 />
+                            <#list record.item as item>
+                                <#assign chargeGrossAmt = 0 />
+                                <#assign whtaxes = "" />
+                                
+                                <#if item.item.internalid == "5233" || item.item.internalid == "5255">
+
+                                    <tr>
+                                        <td colspan="4">${item.item} ${item.custpage_4601_witaxcode}</td>
+                                        <td colspan="5">${item.description}</td>
+                                        <td colspan="2" align="right">${item.quantity}</td>
+                                        <td align="right">${item.units}</td>
+                                        <td colspan="4" align="right">${getFormattedAmount(item.rate)}</td>
+                                        <td colspan="4" align="right">${getFormattedAmount(item.amount)}</td>
+                                        <td colspan="4" align="right">${getFormattedAmount(item.tax1amt)}</td>
+                                        <#assign netTotal += (item.amount + item.tax1amt) />
+                                        <#if item.custcol_4601_witaxapplies>
+                                            <#assign _suitelet_XRC_SL_SALES_INVOICE="https://9794098.extforms.netsuite.com/app/site/hosting/scriptlet.nl?script=1764&deploy=1&compid=9794098&ns-at=AAEJ7tMQD1Ln6fPGTtbFAj1APheu0W3ItA_Eqd2PpuUz9kTR-0s&id=" + item.custcol_4601_witaxcode?replace(" ", "%20") />
+                                           <#include _suitelet_XRC_SL_SALES_INVOICE />
+                                            <#if whtaxes != "null">
+                                                <#list whtaxes?split("|") as wht_data>
+                                                    <#if wht_data?index == 0>
+                                                            <td colspan="4" align="right">${wht_data?split(",")[0]}</td>
+                                                            <td colspan="4" align="center">${wht_data?split(",")[1]}</td>
+                                                            <td colspan="4" align="right">
+                                                                <#assign basis = (wht_data?split(",")[2]?number) / 100 />
+                                                                <#assign wht_rate = (wht_data?split(",")[1]?replace("%", "")?number) / 100 />
+                                                                <#assign wht_amount = (item.amount * basis) * wht_rate/>
+                                                                (${getFormattedAmount(wht_amount)})
+                                                            </td>
+                                                            <td colspan="5" align="right">
+                                                                <#assign chargeGrossAmt = chargeGrossAmt + (item.amount + item.tax1amt - wht_amount) />
+                                                                ${getFormattedAmount(item.amount + item.tax1amt - wht_amount)}
+                                                            </td>
+                                                        </tr>
+                                                        <#else>
+                                                        <tr>
+                                                            <td colspan="28" align="right">${wht_data?split(",")[0]}</td>
+                                                            <td colspan="4" align="center">${wht_data?split(",")[1]}</td>
+                                                            <td colspan="4" align="right">
+                                                                <#assign basis = (wht_data?split(",")[2]?number) / 100 />
+                                                                <#assign wht_rate = (wht_data?split(",")[1]?replace("%", "")?number) / 100 />
+                                                                <#assign wht_amount = (item.amount * basis) * wht_rate/>
+                                                                (${getFormattedAmount(wht_amount)})
+                                                            </td>
+                                                            <td colspan="5" align="right">
+                                                                <#assign chargeGrossAmt = chargeGrossAmt - wht_amount />
+                                                                (${getFormattedAmount(wht_amount)})
+                                                            </td>
+                                                        </tr>
+                                                    </#if>
+                                                </#list>
+                                                <#else>
+                                                    <td colspan="4" align="right">${item.custcol_4601_witaxcode}</td>
+                                                    <td colspan="4" align="center">${item.custcol_4601_witaxrate}</td>
+                                                    <td colspan="4" align="right">
+                                                        <#assign wht_amount = item.amount * item.custcol_4601_witaxrate />
+                                                        (${getFormattedAmount(wht_amount)})
+                                                    </td>
+                                                    <td colspan="5" align="right">
+                                                        <#assign chargeGrossAmt = chargeGrossAmt + (item.amount + item.tax1amt - wht_amount) />
+                                                         ${getFormattedAmount(item.amount + item.tax1amt - wht_amount)}
+                                                    </td>
+                                                </tr>
+                                            </#if>
+                                        <#else>
+                                                <td colspan="4" align="right">&nbsp;</td>
+                                                <td colspan="4" align="center">&nbsp;</td>
+                                                <td colspan="4" align="right">&nbsp;</td>
+                                                <td colspan="5" align="right">
+                                                    <#assign chargeGrossAmt = chargeGrossAmt + item.grossamt />
+                                                    ${getFormattedAmount(item.grossamt)}
+                                                </td>
+                                            </tr>
+                                        </#if>
+                                        <tr>
+                                            <td colspan="36" align="left"><#if item.item.internalid == "5233">Fixed Basic Rent<#else>Variable Rent</#if> Subtotal</td>
+                                            <td colspan="5" align="right" style="border-top: 1px solid black;">
+                                                <#assign totalChargesGrossAmt = totalChargesGrossAmt + chargeGrossAmt />
+                                                ${getFormattedAmount(chargeGrossAmt)}
+                                            </td>
+                                        </tr>
+                                </#if>
+                            </#list>
+                            <tr>
+                                <td colspan="4">Total</td>
+                                <td colspan="32" align="right">&nbsp;</td>
+                                <td colspan="5" align="right" style="border-top: 1px solid black;">${getFormattedAmount(totalChargesGrossAmt)}</td>
+                            </tr>
+                            <tr>
+                                <td colspan="41"><b>Other charges for the Month of ${record.trandate?string.long?split(" ")[0]}, ${record.trandate?string.long?split(" ")[2]}</b></td>
+                            </tr>
+                            <#assign totalOtherCharges = 0 />
+                            <#list record.item as item>
+                                <#assign chargeGrossAmt = 0 />
+                                <#assign whtaxes = "" />
+                                
+                                <#if item.item.internalid != "5233" && item.item.internalid != "5255" && item.item.internalid != "15">
+
+                                    <tr>
+                                        <td colspan="4">${item.item} ${item.custpage_4601_witaxcode}</td>
+                                        <td colspan="5">${item.description}</td>
+                                        <td colspan="2" align="right">${item.quantity}</td>
+                                        <td align="right">${item.units}</td>
+                                        <td colspan="4" align="right">${getFormattedAmount(item.rate)}</td>
+                                        <td colspan="4" align="right">${getFormattedAmount(item.amount)}</td>
+                                        <td colspan="4" align="right">${getFormattedAmount(item.tax1amt)}</td>
+                                        <#assign netTotal += (item.amount + item.tax1amt) />
+                                        <#if item.custcol_4601_witaxapplies>
+                                            <#assign _suitelet_XRC_SL_SALES_INVOICE="https://9794098.extforms.netsuite.com/app/site/hosting/scriptlet.nl?script=1764&deploy=1&compid=9794098&ns-at=AAEJ7tMQD1Ln6fPGTtbFAj1APheu0W3ItA_Eqd2PpuUz9kTR-0s&id=" + item.custcol_4601_witaxcode?replace(" ", "%20") />
+                                           <#include _suitelet_XRC_SL_SALES_INVOICE />
+                                            <#if whtaxes != "null">
+                                                <#list whtaxes?split("|") as wht_data>
+                                                    <#if wht_data?index == 0>
+                                                            <td colspan="4" align="right">${wht_data?split(",")[0]}</td>
+                                                            <td colspan="4" align="center">${wht_data?split(",")[1]}</td>
+                                                            <td colspan="4" align="right">
+                                                                <#assign basis = (wht_data?split(",")[2]?number) / 100 />
+                                                                <#assign wht_rate = (wht_data?split(",")[1]?replace("%", "")?number) / 100 />
+                                                                <#assign wht_amount = (item.amount * basis) * wht_rate/>
+                                                                (${getFormattedAmount(wht_amount)})
+                                                            </td>
+                                                            <td colspan="5" align="right">
+                                                                <#assign chargeGrossAmt = chargeGrossAmt + (item.amount + item.tax1amt - wht_amount) />
+                                                                <#assign totalOtherCharges = totalOtherCharges + (item.amount + item.tax1amt - wht_amount) />
+                                                                ${getFormattedAmount(item.amount + item.tax1amt - wht_amount)}
+                                                            </td>
+                                                        </tr>
+                                                        <#else>
+                                                        <tr>
+                                                            <td colspan="28" align="right">${wht_data?split(",")[0]}</td>
+                                                            <td colspan="4" align="center">${wht_data?split(",")[1]}</td>
+                                                            <td colspan="4" align="right">
+                                                                <#assign basis = (wht_data?split(",")[2]?number) / 100 />
+                                                                <#assign wht_rate = (wht_data?split(",")[1]?replace("%", "")?number) / 100 />
+                                                                <#assign wht_amount = (item.amount * basis) * wht_rate/>
+                                                                (${getFormattedAmount(wht_amount)})
+                                                            </td>
+                                                            <td colspan="5" align="right">
+                                                                <#assign chargeGrossAmt = chargeGrossAmt - wht_amount />
+                                                                <#assign totalOtherCharges = totalOtherCharges + wht_amount />
+                                                                (${getFormattedAmount(wht_amount)})
+                                                            </td>
+                                                        </tr>
+                                                    </#if>
+                                                </#list>
+                                                <#else>
+                                                    <td colspan="4" align="right">${item.custcol_4601_witaxcode}</td>
+                                                    <td colspan="4" align="center">${item.custcol_4601_witaxrate}</td>
+                                                    <td colspan="4" align="right">
+                                                        <#assign wht_amount = item.amount * item.custcol_4601_witaxrate />
+                                                        (${getFormattedAmount(wht_amount)})
+                                                    </td>
+                                                    <td colspan="5" align="right">
+                                                        <#assign chargeGrossAmt = chargeGrossAmt + (item.amount + item.tax1amt - wht_amount) />
+                                                        <#assign totalOtherCharges = totalOtherCharges + (item.amount + item.tax1amt - wht_amount) />
+                                                         ${getFormattedAmount(item.amount + item.tax1amt - wht_amount)}
+                                                    </td>
+                                                </tr>
+                                            </#if>
+                                        <#else>
+                                                <td colspan="4" align="right">&nbsp;</td>
+                                                <td colspan="4" align="center">&nbsp;</td>
+                                                <td colspan="4" align="right">&nbsp;</td>
+                                                <td colspan="5" align="right">
+                                                    <#assign chargeGrossAmt = chargeGrossAmt + item.grossamt />
+                                                    <#assign totalOtherCharges = totalOtherCharges + item.grossamt />
+                                                    ${getFormattedAmount(item.grossamt)}
+                                                </td>
+                                            </tr>
+                                        </#if>
+                                </#if>
+                            </#list>
+                            <tr style="margin-top: 35px;">
+                                <td colspan="24">&nbsp;</td>
+                                <td colspan="12" align="left">Sub Total (Other Charges)</td>
+                                <td colspan="5" align="right">${getFormattedAmount(totalOtherCharges)}</td>
+                            </tr>
+                            <tr style="margin-bottom: 5px;">
+                                <td colspan="24">&nbsp;</td>
+                                <td colspan="12" align="left">Total Statement Amount</td>
+                                <td class="border_t border_b" colspan="5" align="right"><b>${getFormattedAmount(totalChargesGrossAmt + totalOtherCharges)}</b></td>
+                            </tr>
+                        </table>
+                        <table style="width: 100%; font-size: 9px;">
+                            <tr>
+                                <td align="right">Date/Time generated ${.now}</td>
+                            </tr>
+                        </table>
+                        <table style="width: 100%; font-size: 9px;">
+                            <tr>
+                                <td align="center"><b>THIS DOCUMENT IS NOT VALID FOR CLAIM OF INPUT TAX</b></td>
+                            </tr>
+                        </table>
+                        <table style="width: 100%; page-break-before: always;">
+                            <tr>
+                                <td align="center" colspan="24" style="font-size: 18px;"><b>XRC RESOURCES INC.</b></td>
+                            </tr>
+                            <tr>
+                                <td align="center" colspan="24">679 Libis St., Concepcion Uno, Marikina City</td>
+                            </tr>
+                            <tr>
+                                <td align="center" colspan="24">VAT Reg. TIN: 209-519-335-012</td>
+                            </tr>
+                        </table>
+                        <table style="width: 100%; margin-top: 20px;">
+                            <tr>
+                                <td colspan="9" align="center" style="font-size: 18px;"><b>Sales Invoice</b></td>
+                                <td colspan="6" align="center"></td>
+                                <td colspan="9" align="center" style="font-size: 18px;"><span><b
+                                            style="color: red;">No.:
+                                        </b><b>${record.tranid}</b></span></td>
+                            </tr>
+                        </table>
+                        <table style="width: 100%; font-size: 14px;">
+                            <tr>
+                                <td colspan="18" align="right" style="vertical-align: bottom;">Date:</td>
+                                <td class="border_b" colspan="6" align="center" style="vertical-align: bottom;">
+                                    ${record.trandate?string.long}
+                                </td>
+                            </tr>
+                            <tr style="margin-top: 10px;">
+                                <td colspan="4" style="vertical-align: bottom;">Received from</td>
+                                <td class="border_b" colspan="13" style="vertical-align: bottom;" align="center">
+                                    ${legalName}
+                                </td>
+                                <td colspan="3" align="center" style="vertical-align: bottom;">with TIN</td>
+                                <td class="border_b" colspan="4" style="vertical-align: bottom;" align="center">${record.entity.vatregnumber}</td>
+                            </tr>
+                            <tr style="margin-top: 10px;">
+                                <td colspan="5" style="vertical-align: bottom;">With Address at</td>
+                                <td class="border_b" colspan="19" style="vertical-align: bottom;">${default_address?upper_case}</td>
+                            </tr>
+                            <tr style="margin-top: 10px;">
+                                <td colspan="6" style="vertical-align: bottom;">Business Style/Name</td>
+                                <td class="border_b" colspan="18" style="vertical-align: bottom;">${legalName}</td>
+                            </tr>
+                            <tr style="margin-top: 10px;">
+                                <td colspan="5" style="vertical-align: bottom;">the sum of pesos</td>
+                                <td class="border_b" colspan="19" style="vertical-align: bottom;">
+                                    <#assign amount_in_words = '' />
+                                    <#assign _suiteletLocSubDetailsSuiteletURL_AmountInWords="https://9794098.extforms.netsuite.com/app/site/hosting/scriptlet.nl?script=1810&deploy=1&compid=9794098&ns-at=AAEJ7tMQvtqcyPZDWm0uEltZG7fLjLuVVrEGpqxCEeCZQCRgZ7s&amount="+ netTotal>
+                                    <#include _suiteletLocSubDetailsSuiteletURL_AmountInWords />
+                                    ${amount_in_words}
+                                </td>
+                            </tr>
+                            <tr style="margin-top: 10px;">
+                                <td class="border_b" colspan="17" style="vertical-align: bottom;">&nbsp;</td>
+                                <td colspan="7" style="vertical-align: bottom; margin-left: 1px; padding-bottom: 0px;">
+                                    <table style="width: 100%; font-size: 14px;">
+                                        <tr>
+                                            <td colspan="2" style="vertical-align: bottom;">(P</td>
+                                            <td class="border_b" colspan="21" style="vertical-align: bottom;" align="center">${nsformat_currency(netTotal)?keep_after("PHP")}</td>
+                                            <td colspan="1" style="vertical-align: bottom;">)</td>
+                                        </tr>
+                                    </table>
+                                </td>
+                            </tr>
+                            <tr style="margin-top: 10px;">
+                                <td colspan="7" style="vertical-align: bottom;">in full/partial payment of</td>
+                                <td class="border_b" colspan="17" style="vertical-align: bottom;">&nbsp;</td>
+                            </tr>
+                            <tr>
+                                <td colspan="6">
+                                    <table style="width: 100%;">
+                                        <tr>
+                                            <td colspan="6" style="font-size: 9px; vertical-align: bottom;">Total Sales
+                                                (VAT
+                                                Inclusives)</td>
+                                            <td class="border_b" colspan="6"></td>
+                                        </tr>
+                                        <tr>
+                                            <td colspan="6" style="font-size: 9px; vertical-align: bottom;">Less: VAT
+                                            </td>
+                                            <td class="border_b" colspan="6"></td>
+                                        </tr>
+                                        <tr>
+                                            <td colspan="6" style="font-size: 9px; vertical-align: bottom;">Total</td>
+                                            <td class="border_b" colspan="6"></td>
+                                        </tr>
+                                        <tr>
+                                            <td colspan="6" style="font-size: 9px; vertical-align: bottom;">Less:
+                                                Withholding
+                                                Tax</td>
+                                            <td class="border_b" colspan="6"></td>
+                                        </tr>
+                                        <tr>
+                                            <td colspan="6" style="font-size: 9px; vertical-align: bottom;">Amount Due
+                                            </td>
+                                            <td class="border_b" colspan="6"></td>
+                                        </tr>
+                                    </table>
+                                </td>
+                                <td colspan="6">
+                                    <table style="width: 100%;">
+                                        <tr>
+                                            <td colspan="6" style="font-size: 9px; vertical-align: bottom;">VATable
+                                                Sales</td>
+                                            <td class="border_b" colspan="6"></td>
+                                        </tr>
+                                        <tr>
+                                            <td colspan="6" style="font-size: 9px; vertical-align: bottom;">VAT-Exempt
+                                                Sales
+                                            </td>
+                                            <td class="border_b" colspan="6"></td>
+                                        </tr>
+                                        <tr>
+                                            <td colspan="6" style="font-size: 9px; vertical-align: bottom;">Zero Rated
+                                                Sales
+                                            </td>
+                                            <td class="border_b" colspan="6"></td>
+                                        </tr>
+                                        <tr>
+                                            <td colspan="6" style="font-size: 9px; vertical-align: bottom;">VAT Amount
+                                            </td>
+                                            <td class="border_b" colspan="6"></td>
+                                        </tr>
+                                    </table>
+                                </td>
+                                <td colspan="6">
+                                    <table style="width: 100%;">
+                                        <tr>
+                                            <td>&nbsp;</td>
+                                        </tr>
+                                        <tr>
+                                            <td colspan="12"
+                                                style="font-size: 9px; vertical-align: bottom; border: 1px solid black;">
+                                                Sr.
+                                                Citizen TIN</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="border_r border_b border_l" colspan="12"
+                                                style="font-size: 9px; vertical-align: bottom;">OSCA/PWD ID No.</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="border_r border_b border_l" colspan="12"
+                                                style="font-size: 9px; vertical-align: bottom;">Signature</td>
+                                        </tr>
+                                    </table>
+                                </td>
+                                <td colspan="6">
+                                    <table style="width: 100%;">
+                                        <tr>
+                                            <td>&nbsp;</td>
+                                        </tr>
+                                        <tr>
+                                            <td colspan="12" style="font-size: 12px; vertical-align: bottom;">Payment
+                                                Received
+                                                by:</td>
+                                        </tr>
+                                        <tr>
+                                            <td>&nbsp;</td>
+                                        </tr>
+                                        <tr>
+                                            <td>&nbsp;</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="border_t" align="center" colspan="12"
+                                                style="font-size: 12px; vertical-align: bottom;">Authorized Signature
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </td>
+                            </tr>
+                        </table>
+                        <#if footerObj?has_content>
+                            <table class="footer" style="width: 100%; page-break-inside: auto;">
+                                <tr>
+                                    <td class="footermessage" id="footer_message1" colspan="17">
+                                        ${record.custpage_sal_si_message1}
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <br />
+                                        <br />
+                                    </td>
+                                </tr>
+                            </table>
+                            <div style="width: 100%; page-break-inside:auto;">
+                                <table class="footer" style="width: 100%;">
+                                    <#if footerObj.validitymessage?? && footerObj.validitymessage?has_content>
+                                        <tr>
+                                            <td colspan="17" align="center">
+                                                <span id="validity_message"
+                                                    class="strongText">${footerObj.validitymessage}</span><br /><br />
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td><br /></td>
+                                        </tr>
+                                    </#if>
+                                    <#if footerObj?has_content && footerObj.claimmessageexempt?? &&
+                                        footerObj.claimmessageexempt?has_content>
+                                        <tr>
+                                            <td colspan="17" align="center">
+                                                <span id="claim_message"
+                                                    class="strongText">${footerObj.claimmessageexempt}</span><br /><br />
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td><br /></td>
+                                        </tr>
+                                    </#if>
+                                    <tr>
+                                        <td colspan="11" align="left">
+                                            <#if footerObj.isptu>
+                                                <span id="ptu_no_label">PTU No.</span>: <span
+                                                    id="ptu_no">${footerObj.ptunum}</span>
+                                                <br />
+                                                <span id="date_issued_label">Date Issued</span>: <span
+                                                    id="date_issued">${footerObj.ptudateissued}</span>
+                                                &nbsp;&nbsp;
+                                                <#if footerObj.ptuvaliduntil??>
+                                                    <span id="valid_until_label">Valid Until</span>: <span
+                                                        id="valid_until">${footerObj.ptuvaliduntil}</span>
+                                                </#if>
+                                                <br />
+                                                <#if footerObj.serialnumber.salesinvoice??><span
+                                                        id="inclusive_serial_no_label">Inclusive Serial No.</span>:
+                                                    <span
+                                                        id="inclusive_serial_no">${footerObj.serialnumber.salesinvoice}</span>
+                                                </#if>
+                                                <#elseif footerObj.isaccn>
+                                                    <span id="ctrl_no_label">ACCN</span>: <span
+                                                        id="ctrl_no">${footerObj.controlnumber}</span>
+                                                    <br />
+                                                    <span id="ctrl_no_dt_issued_label">ACCN Issue Date</span>: <span
+                                                        id="ctrl_no_dt_issued">${footerObj.controldateissued}</span>
+                                                    <br />
+                                                    <#if footerObj.serialnumber.salesinvoice??><span
+                                                            id="inclusive_serial_no_label">Series Range</span>: <span
+                                                            id="inclusive_serial_no">${footerObj.serialnumber.salesinvoice}</span>
+                                                    </#if>
+                                            </#if>
+                                            <br />
+                                            <br />
+                                            <span id="timestamp_label">Timestamp</span>: <span
+                                                id="timestamp">${.now?iso_ms_nz('Asia/Manila')?datetime.iso?string('MM/dd/yyyy
+                                                HH:mm:ss')}</span>
+                                        </td>
+                                        <td class="footermessage" id="footer_message2" colspan="6">
+                                            ${record.custpage_sal_si_message2}
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <br />
+                                            <br />
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
+                            <table class="footer" style="width: 100%; page-break-inside: avoid;">
+                                <tr>
+                                    <td class="footermessage" id="footer_message3" colspan="17">
+                                        ${record.custpage_sal_si_message3}
+                                    </td>
+                                </tr>
+                            </table>
+                        </#if>
+                        <br />
+                        <!-- END FOOTER-->
+
+                        <!-- Remittance Slip-->
+                        <#if (footerObj.remittanceobj)?has_content>
+                            <div class="remittance">
+                                <br />
+                                <br />
+                                <hr class="dotted" />
+                                <div>
+                                    <!-- Add remittance details here-->
+                                    <table align="center" border="0" cellpadding="0" cellspacing="0"
+                                        style="width: 100%;">
+                                        <tr>
+                                            <td valign="top" colspan="6">
+                                                <table border="0" cellpadding="1" cellspacing="0">
+                                                    <tr>
+                                                        <td class="headline" id="remittance_company_name">
+                                                            ${companyInformation.companyName}<br /></td>
+                                                    </tr>
+                                                </table>
+                                            </td>
+                                            <td valign="top" colspan="5">
+                                                <table border="0" cellpadding="1" cellspacing="0" style="width: 100%;">
+                                                    <tr>
+                                                        <td class="headline remittance"
+                                                            id="remittance_check_payable_lbl">
+                                                            Remittance Slip</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td class="remittance">
+                                                            <table align="left" style="width: 100%;">
+                                                                <tr>
+                                                                    <td class="remittance"><b
+                                                                            id="remittance_customer_lbl">Customer</b>
+                                                                    </td>
+                                                                    <td class="remittance" id="remittance_customer">
+                                                                        ${footerObj.remittanceobj.entity}</td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td class="remittance"><b
+                                                                            id="remittance_doc_lbl">Sales
+                                                                            Invoice #</b></td>
+                                                                    <td class="remittance" id="remittance_doc_tranid">
+                                                                        ${record.tranid}</td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td class="remittance"><b
+                                                                            id="remittance_amt_due_lbl">Amount
+                                                                            Due</b></td>
+                                                                    <td class="remittance" id="remittance_amt_due">
+                                                                        ${record.total}</td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td class="remittance"><b
+                                                                            id="remittance_amt_paid_lbl">Amount Paid</b>
+                                                                    </td>
+                                                                    <td class="remittance">_______________</td>
+                                                                </tr>
+                                                            </table>
+                                                        </td>
+                                                    </tr>
+                                                </table>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                    <br />
+                                    <table align="center" border="0" cellpadding="0" cellspacing="0"
+                                        style="width: 100%;">
+                                        <tr>
+                                            <td valign="top" colspan="6">
+                                                <table border="0" cellpadding="1" cellspacing="0">
+                                                    <tr>
+                                                        <td class="headline" id="remittance_cc_info_lbl">Please Enter
+                                                            Your
+                                                            Credit Card Information</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td id="remittance_type_card_lbl">Type: ____Discover ____Master
+                                                            Card
+                                                            ____VISA ____American Express <br />Credit Card #:
+                                                            ________________________<br />Expiration Date: _____Month
+                                                            _____Year<br />Signature: ___________________________</td>
+                                                    </tr>
+                                                </table>
+                                            </td>
+                                            <td valign="top" colspan="5">
+                                                <table border="0" cellpadding="0" cellspacing="0">
+                                                    <tr>
+                                                        <td class="headline" id="remittance_check_payable_lbl">Make
+                                                            Checks
+                                                            Payable To</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>
+                                                            <span
+                                                                id="remittance_payable_to">${headerObj.name}</span><br />
+                                                            <span
+                                                                id="remittance_payable_addr">${headerObj.mainaddress?html?replace("\n",
+                                                                "<br />")}</span>
+                                                        </td>
+                                                    </tr>
+                                                </table>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                    <br />
+                                    <#if footerObj.remittanceobj.message??>
+                                        <table align="center" border="0" cellpadding="0" cellspacing="0"
+                                            style="width: 100%;">
+                                            <tr valign="top">
+                                                <td colspan="3" id="remittance_message">
+                                                    ${footerObj.remittanceobj.message}</td>
+                                                <td colspan="2"></td>
+                                            </tr>
+                                        </table>
+                                    </#if>
+                                </div>
+                            </div>
+                        </#if>
+                        <!-- END Remittance Slip-->
+
+                        <!-- Print bar code if preference is checked -->
+                        <#if preferences.print_barcodes?string=="Yes">
+                            <br />
+                            <barcode codetype="code128" showtext="true" value="${record.tranid}"></barcode>
+                        </#if>
+                        <#function getFormattedAmount amount>
+                            <#assign integerPart=amount?int>
+                                <#assign decimalPart=amount - integerPart>
+                                    <#if decimalPart==0>
+                                        <#return "${amount?string('###,###,###,###.##')}.00">
+                                            <#else>
+                                                <#assign returnString="${amount?string('###,###,###,###.##')}" />
+                                                <#if returnString?split(".")[1]?length==1>
+                                                    <#assign returnString=returnString + "0" />
+                                                </#if>
+                                                <#return returnString>
+                                    </#if>
+                        </#function>
+            </body>
+        </pdf>

@@ -1,0 +1,355 @@
+<?xml version="1.0"?>
+<!DOCTYPE pdf PUBLIC "-//big.faceless.org//report" "report-1.1.dtd">
+<pdf>
+
+    <head>
+        <link name="NotoSans" type="font" subtype="truetype" src="${nsfont.NotoSans_Regular}"
+            src-bold="${nsfont.NotoSans_Bold}" src-italic="${nsfont.NotoSans_Italic}"
+            src-bolditalic="${nsfont.NotoSans_BoldItalic}" bytes="2" />
+        <#if .locale=="zh_CN">
+            <link name="NotoSansCJKsc" type="font" subtype="opentype" src="${nsfont.NotoSansCJKsc_Regular}"
+                src-bold="${nsfont.NotoSansCJKsc_Bold}" bytes="2" />
+            <#elseif .locale=="zh_TW">
+                <link name="NotoSansCJKtc" type="font" subtype="opentype" src="${nsfont.NotoSansCJKtc_Regular}"
+                    src-bold="${nsfont.NotoSansCJKtc_Bold}" bytes="2" />
+                <#elseif .locale=="ja_JP">
+                    <link name="NotoSansCJKjp" type="font" subtype="opentype" src="${nsfont.NotoSansCJKjp_Regular}"
+                        src-bold="${nsfont.NotoSansCJKjp_Bold}" bytes="2" />
+                    <#elseif .locale=="ko_KR">
+                        <link name="NotoSansCJKkr" type="font" subtype="opentype" src="${nsfont.NotoSansCJKkr_Regular}"
+                            src-bold="${nsfont.NotoSansCJKkr_Bold}" bytes="2" />
+                        <#elseif .locale=="th_TH">
+                            <link name="NotoSansThai" type="font" subtype="opentype"
+                                src="${nsfont.NotoSansThai_Regular}" src-bold="${nsfont.NotoSansThai_Bold}" bytes="2" />
+        </#if>
+        <style>
+            * {
+                <#if .locale=="zh_CN">font-family: NotoSans, NotoSansCJKsc, sans-serif;
+                <#elseif .locale=="zh_TW">font-family: NotoSans, NotoSansCJKtc, sans-serif;
+                <#elseif .locale=="ja_JP">font-family: NotoSans, NotoSansCJKjp, sans-serif;
+                <#elseif .locale=="ko_KR">font-family: NotoSans, NotoSansCJKkr, sans-serif;
+                <#elseif .locale=="th_TH">font-family: NotoSans, NotoSansThai, sans-serif;
+                <#else>font-family: NotoSans, sans-serif;
+                </#if>
+            }
+
+            table {
+                table-layout: fixed;
+            }
+
+            td p {
+                align: left
+            }
+
+            .border_t {
+                border-top: 1px solid black;
+            }
+
+            .border_b {
+                border-bottom: 1px solid black;
+            }
+
+            .border_t_tbl {
+                border-top: 1px solid #adadad;
+            }
+
+            .border_r_tbl {
+                border-right: 1px solid #adadad;
+            }
+
+            .border_b_tbl {
+                border-bottom: 1px solid #adadad;
+            }
+
+            .border_l_tbl {
+                border-left: 1px solid #adadad;
+            }
+        </style>
+    </head>
+
+    <body size="Letter" style="font-size: 11px" padding="0.1in 0.1in 0.1in 0.1in">
+        <#assign charges="" >
+        <#assign locationLogoURL="" >
+
+        <#assign lease_proposal_rental_escalation='' />
+        <#assign lease_proposal_cusa='' />
+        <#assign space_no='' />
+        <#assign location_code='' />
+        <#assign account_name='' />
+        <#assign bank_branch='' />
+        <#assign account_number='' />
+        <#assign emp_a_job_title='' />
+        <#assign emp_b_job_title='' />
+        <#assign emp_c_job_title='' />
+        <#assign emp_d_job_title='' />
+
+        <#assign _advanceChargesSuiteletURL = "https://9794098.extforms.netsuite.com/app/site/hosting/scriptlet.nl?script=1514&deploy=1&compid=9794098&ns-at=AAEJ7tMQASPWQjSTpcj00hWOrjBVgRzdztXOgZWqN4QzjykWJWY&id=" + record.id>
+        <#include _advanceChargesSuiteletURL />
+
+        <#assign _suiteletLocSubDetailsSuiteletURL = "https://9794098.extforms.netsuite.com/app/site/hosting/scriptlet.nl?script=1529&deploy=1&compid=9794098&ns-at=AAEJ7tMQ9isDm4xWz0nN5mUFQ96GBHVVq20h1QrvH-gpYu7Df_4&querytype=location&locid=" + record.custrecord_xrc_isoa_location.id>
+        <#include _suiteletLocSubDetailsSuiteletURL />
+
+        <#assign _suiteletGetLeaseProposalDetailsURL = "https://9794098.extforms.netsuite.com/app/site/hosting/scriptlet.nl?script=1761&deploy=1&compid=9794098&ns-at=AAEJ7tMQlThCjn6sVN0qoSH5qEGAS0OeZhzL0HNbn4lVzTYnAKs&lease_proposal_id=" + record.custrecord_xrc_lease_proposal.id>
+        <#include _suiteletGetLeaseProposalDetailsURL />
+        
+        <#assign _suiteletGetEmployeeDetailsURL = "https://9794098.extforms.netsuite.com/app/site/hosting/scriptlet.nl?script=1762&deploy=1&compid=9794098&ns-at=AAEJ7tMQ2YU00TbghStVLvzThv5eD1l2osm-7iNUmxAC_ZBQ4Eg&emp_ids=" + record.custrecord_xrc_prepared_by4.internalid + '-' + record.custrecord_xrc_checked_by4.internalid +'-' + record.custrecord_xrc_noted_by4.internalid + '-' + record.custrecord_xrc_isoa_approvedby.internalid>
+        <#include _suiteletGetEmployeeDetailsURL />
+
+        <table style="width: 100%; margin-bottom: 10px;">
+            <tr>    
+                <td colspan="6">
+                    <img src="https://9794098.app.netsuite.com${locationLogoURL?html}" style="width: 250px; height: 100px;" />
+                    </td>
+                <td colspan="6">
+                    <table style="width: 100%;">
+                        <tr>
+                            <td align="center" colspan="12" style="font-size: 16px;"><strong>INITIAL STATEMENT OF ACCOUNT</strong></td>
+                        </tr>
+                        <tr>
+                            <td colspan="6">SOA No.:</td>
+                            <td colspan="6">${record.name}</td>
+                        </tr>
+                        <tr>
+                            <td colspan="6">Statement Date:</td>
+                            <td colspan="6">${record.custrecord_xrc_statement_date}</td>
+                        </tr>
+                        <tr>
+                            <td colspan="6">Institution Code:</td>
+                            <td colspan="6">${record.custrecord_xrc_isoa_institution_code}</td>
+                        </tr>
+                        <tr>
+                            <td colspan="6">Subscriber's Account No.:</td>
+                            <td colspan="6">${record.custrecord_xrc_subs_acct_num}</td>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+        </table>
+        <table style="width: 100%;">
+            <tr>
+                <td align="center" colspan="12" style="background-color: rgb(64, 92, 248); color: white;">LESSEE INFORMATION</td>
+            </tr>
+            <tr>
+                <td colspan="2"><strong>Corporate Name :</strong></td>
+                <td colspan="5">${record.custrecord_xrc_legal_name}</td>
+                <td colspan="2"><strong>Trade Name :</strong></td>
+                <td colspan="3">${record.custrecord_xrc_customer_name.custentity_xrc_trade_name}</td>
+            </tr>
+            <tr>
+                <td colspan="2"><strong>Contact Person :</strong></td>
+                <td colspan="5">${record.custrecord_xrc_contact_person?keep_after(" : ")}</td>
+                <td colspan="2"><strong>Contact Number :</strong></td>
+                <td colspan="3">${record.custrecord_xrc_contact_num}</td>
+            </tr>
+            <tr>
+                <td colspan="2"><strong>Email Address :</strong></td>
+                <td colspan="5">${record.custrecord_xrc_email_add}</td>
+                <td colspan="2"><strong>TIN :</strong></td>
+                <td colspan="3">${record.custrecord_xrc_tin}</td>
+            </tr>
+            <tr>
+                <td align="center" colspan="12" style="background-color: rgb(64, 92, 248); color: white;">OTHER DETAILS
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2"><strong>Lease Commencement :</strong></td>
+                <td colspan="2">${record.custrecord_xrc_lease_commencement}</td>
+                <td colspan="2"><strong>Lease Expiry :</strong></td>
+                <td colspan="2">${record.custrecord_xrc_lease_expiry}</td>
+                <td colspan="2"><strong>Location :</strong></td>
+                <td colspan="2"><strong>${space_no?keep_after(" ")} ${location_code}</strong></td>
+            </tr>
+            <tr>
+                <td colspan="12">&nbsp;</td>
+            </tr>
+            <tr>
+                <td colspan="2"><strong>Area :</strong></td>
+                <td colspan="2">${record.custrecord_xrc_area} SQM</td>
+                <td colspan="2"><strong>Basic Rent / Rent :</strong></td>
+                <td colspan="2">${addSpaceAfterPHP(record.custrecord_xrc_basic_rent)}</td>
+                <td colspan="2"><strong>Percentage Rate :</strong></td>
+                <td colspan="2">${record.custrecord_xrc_percentage_rate}</td>
+            </tr>
+            <tr>
+                <td colspan="2">&nbsp;</td>
+                <td colspan="2">&nbsp;</td>
+                <td colspan="2"><strong>Basic CUSA / CUSA :</strong></td>
+                <td colspan="2"><#if lease_proposal_cusa?has_content>PHP ${getFormattedAmount(lease_proposal_cusa?number)}</#if></td>
+                <td colspan="2"><strong>Rental Escalation Rate :</strong></td>
+                <td colspan="2">${lease_proposal_rental_escalation}% per annum</td>
+            </tr>
+        </table>
+        <table style="width: 100%; margin-top: 20px;">
+            <tr>
+                <td align="center" colspan="4" style="border: 1px solid;">
+                    <p style="text-align: center; margin-top: 5px;"><strong>Initial Charges</strong></p>
+                    <p style="text-align: center;">
+                        <#if addSpaceAfterPHP(record.custrecord_xrc_initial_charges)?has_content>
+                            ${addSpaceAfterPHP(record.custrecord_xrc_initial_charges)}
+                            <#else>
+                                0.00
+                        </#if>
+                    </p>
+                </td>
+                <td align="center" colspan="4"
+                    style="border-top: 1px solid; border-right: 1px solid; border-bottom: 1px solid;">
+                    <p style="text-align: center; margin-top: 5px;"><strong>12% VAT / EWT</strong></p>
+                    <p style="text-align: center;">
+                        <#if addSpaceAfterPHP(record.custrecord_xrc_total_vat)?has_content>
+                            ${addSpaceAfterPHP(record.custrecord_xrc_total_vat)}
+                            <#else>
+                                0.00
+                        </#if>
+                    </p>
+                </td>
+                <td align="center" colspan="4"
+                    style="border-top: 1px solid; border-right: 1px solid; border-bottom: 1px solid;">
+                    <p style="text-align: center; margin-top: 5px;"><strong>CREDIT MEMO</strong></p>
+                    <p style="text-align: center;">0.00</p>
+                </td>
+                <td align="center" colspan="4"
+                    style="border-top: 1px solid; border-right: 1px solid; border-bottom: 1px solid;">
+                    <p style="text-align: center; margin-top: 5px;"><strong>Total Amount Due</strong></p>
+                    <p style="text-align: center;">
+                        <#if addSpaceAfterPHP(record.custrecord_total_amount_due)?has_content>
+                            ${addSpaceAfterPHP(record.custrecord_total_amount_due)}
+                            <#else>
+                                0.00
+                        </#if>
+                    </p>
+                </td>
+            </tr>
+        </table>
+        <table style="width: 100%; margin-top: 5px; border: 1px solid #dbdbdb; font-size: 10px;">
+            <tr>
+                <td colspan="5" align="center" style="background-color: rgb(64, 92, 248); color: white;">Account ID</td>
+                <td colspan="12" align="center" style="background-color: rgb(64, 92, 248); color: white;">Account
+                    Description</td>
+                <td colspan="5" align="center" style="background-color: rgb(64, 92, 248); color: white;">Charges</td>
+                <td colspan="5" align="center" style="background-color: rgb(64, 92, 248); color: white;">Total Amount</td>
+                <td colspan="5" align="center" style="background-color: rgb(64, 92, 248); color: white;">Tax Amount</td>
+                <td colspan="5" align="center" style="background-color: rgb(64, 92, 248); color: white;">WHT Code
+                </td>
+                <td colspan="5" align="center" style="background-color: rgb(64, 92, 248); color: white;">WHT Amount
+                </td>
+                <td colspan="5" align="center" style="background-color: rgb(64, 92, 248); color: white;">Total Amount Due
+                </td>
+            </tr>
+            <#if charges?has_content>
+                <#list charges?split(',') as charge>
+                    <#assign accountId = charge?split('&')[0]?split('=')[1] />
+                    <#assign accDesc = charge?split('&')[1]?split('=')[1] />
+                    <#assign charges = charge?split('&')[2]?split('=')[1] />
+                    <#assign totalAmt = charge?split('&')[3]?split('=')[1] />
+                    <#assign taxAmt = charge?split('&')[4]?split('=')[1] />
+                    <#assign whtAmt = charge?split('&')[5]?split('=')[1] />
+                    <#assign due = charge?split('&')[6]?split('=')[1] />
+                    <#assign qty = charge?split('&')[7]?split('=')[1] />
+                    <#assign wht_code = charge?split('&')[8]?split('=')[1] />
+                    <#assign bcolor = "" >
+                    <#if (charge_index + 1) % 2 != 0>
+                        <#assign bcolor = "#ececec" >
+                        <#else>
+                        <#assign bcolor = "#fff" >
+                    </#if>
+                    <tr style="background-color: ${bcolor};">
+                        <td class="border_r_tbl" colspan="5">${accountId}</td>
+                        <td colspan="8">${accDesc?replace('\n', '<br />')}</td>
+                        <td class="border_r_tbl" align="right" colspan="4"><#if qty?has_content>(${qty}<#if qty?number gt 1>mos.<#else>mon.</#if>)&nbsp;@</#if></td>
+                        <td class="border_r_tbl" align="right" colspan="5"><#if charges?has_content>${getFormattedAmount(charges?number)}</#if></td>
+                        <td class="border_r_tbl" align="right" colspan="5"><#if totalAmt?has_content>${getFormattedAmount(totalAmt?number)}</#if></td>
+                        <td class="border_r_tbl" align="right" colspan="5"><#if taxAmt?has_content>${getFormattedAmount(taxAmt?number)}</#if></td>
+                        <td class="border_r_tbl" align="right" colspan="5">${wht_code}</td>
+                        <td class="border_r_tbl" align="right" colspan="5"><#if whtAmt?has_content>${getFormattedAmount(whtAmt?number)}</#if></td>
+                        <td align="right" colspan="5">                        
+                            <#if due?has_content>
+                                <#if due != "N/A">
+                                    ${getFormattedAmount(due?number)}
+                                </#if>
+                            <#else>
+                                0.00
+                            </#if>
+                        </td>
+                    </tr>
+                </#list>
+            </#if>
+        </table>
+        <table style="width: 100%;">
+            <tr>
+                <td align="center" colspan="24"><i>*** NOTHING FOLLOWS ***</i></td>
+            </tr>
+            <tr style="background-color: rgb(64, 92, 248);">
+                <td align="center" colspan="24">&nbsp;  </td>
+            </tr>
+        </table>
+        <table style="width: 100%;">
+            <tr>
+                <td style="font-size: 9px;">
+                    1. Please prepare cheque/s payable to ${account_name?upper_case} and have it deposited directly to our bank. Account details are stated herein:<br />
+                    <span style="margin-left: 70px;"><b>Account name : ${account_name?upper_case}</b></span><br />
+                    <span style="margin-left: 70px;"><b>Bank / Branch : ${bank_branch?upper_case}</b></span><br />
+                    <span style="margin-left: 70px;"><b>Account Number : ${account_number}</b></span>
+                </td>
+            </tr>
+            <tr>
+                <td style="font-size: 9px;">
+                    2. Please review your document immediately. Any discrepancyshould be made known in writing to the Company's Mall Admin<br />
+                    <span style="margin-left: 20px;">within Five (5) Days from receipt of this document. Failure to infoorm the Mall Admin within the said period shall result</span><br />
+                    <span style="margin-left: 20px;">to a conclusive presumption that the amount stated in this document is correct</span>
+                </td>
+            </tr>
+            <tr>
+                <td class="border_b" style="font-size: 9px; padding-bottom: 5px;">
+                    3. Kindly submit vour <b>B.I.R. Form 2307</b> until the end of this month, failure to comply, 5% / 2% withholding tax deducted will be charged back.
+                </td>
+            </tr>
+            <tr>
+                <td class="border_t border_b" style="font-size: 9px; margin-top: 5px;">
+                    Mall / Building Admin will no longer accept and/or receive payment/sfrom tenants. Check and/or cash payment/s should be directly desposited<br />
+                    to the above mentioned bank account/s. <b>PROOF OF PAYMENT</b> will bepresented to mall admin or email to creditandcollection@xentrolmalls.com<br />
+                    for the issuance Official Receipt and / or acknowledgement receipt. Faillure to comply may result to unposted of payment/s<br /><br />
+                    Should you have any inquiry/ies concerning this document, please contact: mobile numbers 09776077646 / 09613065370
+                </td>
+            </tr>
+        </table>
+        <table style="width: 100%; font-size: 9px; margin-top: 15px;">
+            <tr>
+                <td colspan="6"><b>Prepared by:</b></td>
+                <td colspan="6" style="margin-left: 20px;"><b>Checked by:</b></td>
+                <td colspan="6" style="margin-left: 20px;"><b>Noted by:</b></td>
+                <td colspan="6" style="margin-left: 20px;"><b>Approved by:</b></td>
+            </tr>
+            <tr><td>&nbsp;</td></tr>
+            <tr><td>&nbsp;</td></tr>
+            <tr>
+                <td colspan="6" align="center">${record.custrecord_xrc_prepared_by4?keep_after(" ")}</td>
+                <td colspan="6" align="center" style="margin-left: 20px;">${record.custrecord_xrc_checked_by4?keep_after(" ")}</td>
+                <td colspan="6" align="center" style="margin-left: 20px;">${record.custrecord_xrc_noted_by4?keep_after(" ")}</td>
+                <td colspan="6" align="center" style="margin-left: 20px;">${record.custrecord_xrc_isoa_approvedby?keep_after(" ")}</td>
+            </tr>
+            <tr>
+                <td class="border_t" colspan="6" align="center"><b>${emp_a_job_title?html}</b></td>
+                <td class="border_t" colspan="6" align="center" style="margin-left: 20px;"><b>${emp_b_job_title?html}</b></td>
+                <td class="border_t" colspan="6" align="center" style="margin-left: 20px;"><b>${emp_c_job_title?html}</b></td>
+                <td class="border_t" colspan="6" align="center" style="margin-left: 20px;"><b>${emp_d_job_title?html}</b></td>
+            </tr>
+        </table>
+        <#function getFormattedAmount amount>
+        <#assign integerPart=amount?int>
+            <#assign decimalPart=amount - integerPart>
+                <#if decimalPart==0>
+                    <#return "${amount?string(' ###,###,###,###.##')}.00">
+                <#else>
+                    <#assign returnString="${amount?string('###,###,###,###.##')}" />
+                    <#if returnString?split(".")[1]?length==1>
+                        <#assign returnString=returnString + "0" />
+                    </#if>
+                        <#return returnString>
+                </#if>
+        </#function>
+
+        <#function addSpaceAfterPHP amount>
+            <#return amount?replace("PHP", "PHP " )>
+        </#function>
+    </body>
+</pdf>

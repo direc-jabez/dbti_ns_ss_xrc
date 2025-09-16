@@ -1,0 +1,300 @@
+<?xml version="1.0"?>
+<!DOCTYPE pdf PUBLIC "-//big.faceless.org//report" "report-1.1.dtd">
+<pdf>
+
+    <head>
+        <link name="NotoSans" type="font" subtype="truetype" src="${nsfont.NotoSans_Regular}"
+            src-bold="${nsfont.NotoSans_Bold}" src-italic="${nsfont.NotoSans_Italic}"
+            src-bolditalic="${nsfont.NotoSans_BoldItalic}" bytes="2" />
+        <#if .locale=="zh_CN">
+            <link name="NotoSansCJKsc" type="font" subtype="opentype" src="${nsfont.NotoSansCJKsc_Regular}"
+                src-bold="${nsfont.NotoSansCJKsc_Bold}" bytes="2" />
+            <#elseif .locale=="zh_TW">
+                <link name="NotoSansCJKtc" type="font" subtype="opentype" src="${nsfont.NotoSansCJKtc_Regular}"
+                    src-bold="${nsfont.NotoSansCJKtc_Bold}" bytes="2" />
+                <#elseif .locale=="ja_JP">
+                    <link name="NotoSansCJKjp" type="font" subtype="opentype" src="${nsfont.NotoSansCJKjp_Regular}"
+                        src-bold="${nsfont.NotoSansCJKjp_Bold}" bytes="2" />
+                    <#elseif .locale=="ko_KR">
+                        <link name="NotoSansCJKkr" type="font" subtype="opentype" src="${nsfont.NotoSansCJKkr_Regular}"
+                            src-bold="${nsfont.NotoSansCJKkr_Bold}" bytes="2" />
+                        <#elseif .locale=="th_TH">
+                            <link name="NotoSansThai" type="font" subtype="opentype"
+                                src="${nsfont.NotoSansThai_Regular}" src-bold="${nsfont.NotoSansThai_Bold}" bytes="2" />
+        </#if>
+        <macrolist>
+            <macro id="nlfooter">
+                <table class="footer">
+                    <tr>
+                        <td align="right">
+                            <pagenumber /> of
+                            <totalpages />
+                        </td>
+                    </tr>
+                </table>
+            </macro>
+        </macrolist>
+        <style>
+            * {
+                <#if .locale=="zh_CN">font-family: NotoSans, NotoSansCJKsc, sans-serif;
+                <#elseif .locale=="zh_TW">font-family: NotoSans, NotoSansCJKtc, sans-serif;
+                <#elseif .locale=="ja_JP">font-family: NotoSans, NotoSansCJKjp, sans-serif;
+                <#elseif .locale=="ko_KR">font-family: NotoSans, NotoSansCJKkr, sans-serif;
+                <#elseif .locale=="th_TH">font-family: NotoSans, NotoSansThai, sans-serif;
+                <#else>font-family: NotoSans, sans-serif;
+                </#if>
+            }
+
+            table {
+                font-size: 9pt;
+                table-layout: fixed;
+            }
+
+            th {
+                font-weight: bold;
+                font-size: 8pt;
+                vertical-align: middle;
+                padding: 5px 6px 3px;
+                background-color: #e3e3e3;
+                color: #333333;
+            }
+
+            td {
+                padding: 4px 6px;
+            }
+
+            td p {
+                align: left
+            }
+
+            b {
+                font-weight: bold;
+                color: #333333;
+            }
+
+            table.header td {
+                padding: 0;
+                font-size: 10pt;
+            }
+
+            table.footer td {
+                padding: 0;
+                font-size: 8pt;
+            }
+
+            table.itemtable th {
+                padding-bottom: 10px;
+                padding-top: 10px;
+            }
+
+            table.body td {
+                padding-top: 2px;
+            }
+
+            table.total {
+                page-break-inside: avoid;
+            }
+
+            tr.totalrow {
+                background-color: #e3e3e3;
+                line-height: 200%;
+            }
+
+            td.totalboxtop {
+                font-size: 12pt;
+                background-color: #e3e3e3;
+            }
+
+            td.addressheader {
+                font-size: 8pt;
+                padding-top: 6px;
+                padding-bottom: 2px;
+            }
+
+            td.address {
+                padding-top: 0;
+            }
+
+            td.totalboxmid {
+                font-size: 28pt;
+                padding-top: 20px;
+                background-color: #e3e3e3;
+            }
+
+            span.title {
+                font-size: 28pt;
+            }
+
+            span.number {
+                font-size: 16pt;
+            }
+
+            hr {
+                width: 100%;
+                color: #d3d3d3;
+                background-color: #d3d3d3;
+                height: 1px;
+            }
+
+            .border_t {
+                border-top: 1px solid black;
+            }
+
+            .border_r {
+                border-right: 1px solid black;
+            }
+
+            .border_b {
+                border-bottom: 1px solid black;
+            }
+
+            .border_l {
+                border-left: 1px solid black;
+            }
+        </style>
+    </head>
+
+    <body header="nlheader" header-height="15%" footer="nlfooter" footer-height="10pt" padding="0.5in 0.5in 0.5in 0.5in"
+        size="Letter">
+        <#assign gl="">
+        <#assign
+            _glSuiteletURL="https://9794098.extforms.netsuite.com/app/site/hosting/scriptlet.nl?script=1513&deploy=1&compid=9794098&ns-at=AAEJ7tMQNW8lv4ZYtLjecvf_54eYVt-RdeoIKM5PDfBf1Bc1s-I&id="
+            + record.internalid + "&rec_type=" + record.dbstrantype />
+        <#include _glSuiteletURL />
+        <table style="width: 100%;">
+            <tr>
+                <td colspan="24" align="center" style="font-size: 18px;"><b>XRC MALL DEVELOPER INC.</b></td>
+            </tr>
+            <tr style="margin-top: 10px;">
+                <td colspan="6" rowspan="2" align="center" style="font-size: 18px;"><b>Check Voucher</b></td>
+                <td colspan="10" rowspan="2" style="font-size: 18px;">&nbsp;</td>
+                <td colspan="4" align="right" style="vertical-align: bottom;">Check Voucher:</td>
+                <td class="border_b" colspan="4" align="center">
+                    ${record.custbody_xrc_vend_prep_num}
+                </td>
+            </tr>
+            <tr>
+                <td colspan="4" align="right" style="vertical-align: bottom;">Transaction Date:</td>
+                <td class="border_b" colspan="4" align="center">${record.trandate}</td>
+            </tr>
+        </table>
+        <table style="width: 100%; margin-top: 15px;">
+            <tr>
+                <td colspan="12" style="border: 1px solid black;">Payable to:</td>
+                <td colspan="12" class="border_t border_r">Bank Account: ${record.account?keep_after(" ")}</td>
+            </tr>
+            <tr>
+                <td class="border_r border_b border_l" colspan="12">
+                    <#if record.custbody_xrc_name_on_check?has_content>
+                        ${record.custbody_xrc_name_on_check}
+                        <#else>
+                            ${record.entity?upper_case?keep_after(" ")}
+                    </#if>
+                </td>
+                <td class="border_r border_b" colspan="12">&nbsp;</td>
+            </tr>
+            <tr>
+                <td colspan="12" class="border_r border_b border_l">Deposit to:</td>
+                <td colspan="12" class="border_r">Check #: ${record.tranid}</td>
+            </tr>
+            <tr>
+                <td class="border_r border_b border_l" colspan="12">
+                    ${record.custbody_xrc_check_payee_name?keep_after(" ")}
+                </td>
+                <td class="border_r border_b" colspan="12">&nbsp;</td>
+            </tr>
+            <tr style="margin-top: 15px;">
+                <td colspan="5" style="border: 1px solid black;">Counter Receipt No.</td>
+                <td colspan="2">&nbsp;</td>
+                <td colspan="5" style="border: 1px solid black;">Vendor Terms</td>
+                <td colspan="12">&nbsp;</td>
+            </tr>
+            <tr>
+                <td class="border_r border_b border_l" colspan="5">&nbsp;</td>
+                <td colspan="2">&nbsp;</td>
+                <td class="border_r border_b border_l" colspan="5">&nbsp;</td>
+                <td colspan="12">&nbsp;</td>
+            </tr>
+        </table>
+        <#assign totalDebit = 0>
+        <#assign totalCredit = 0>
+        <table style="width: 100%; margin-top: 15px; border: 1px solid black;">
+            <tr>
+                <td class="border_r border_b" colspan="7" align="center"><b>Account Code</b></td>
+                <td class="border_r border_b" colspan="7" align="center"><b>Description</b></td>
+                <td class="border_b" colspan="5" align="center"><b>Debit</b></td>
+                <td class="border_b" colspan="5" align="center"><b>Credit</b></td>
+            </tr>
+            <#list gl?split(',') as line>
+                <#assign account=line?html?split('&')[0]?split('=')[1]>
+                <#assign debitamount=line?html?split('&')[1]?split('=')[1]>
+                <#assign creditamount=line?html?split('&')[2]?split('=')[1]>
+                <#if debitamount?has_content><#assign totalDebit += debitamount?number></#if>
+                <#if creditamount?has_content><#assign totalCredit += creditamount?number></#if>
+                
+                        <tr>
+                            <td class="border_r" colspan="7" align="left">${account?keep_after(" ")}</td>
+                            <td class="border_r" colspan="7" align="center">${record.memo}</td>
+                            <td class="border_r" colspan="5" align="right"><#if debitamount?has_content>${getFormattedAmount(debitamount?number)}</#if></td>
+                            <td class="" colspan="5" align="right"><#if creditamount?has_content>${getFormattedAmount(creditamount?number)}</#if></td>
+                        </tr>
+                    </#list>
+                    <tr>
+                        <td class="border_r" colspan="7" align="center">&nbsp;</td>
+                        <td class="border_r" colspan="7" align="center">&nbsp;</td>
+                        <td class="border_r" colspan="5" align="center">&nbsp;</td>
+                        <td class="" colspan="5" align="center">&nbsp;</td>
+                    </tr>
+                </table>
+                <table style="width: 100%;">
+                    <tr>
+                        <td colspan="7" align="center">&nbsp;</td>
+                        <td class="border_r border_b border_l" colspan="7" align="right"><b>Total</b></td>
+                        <td class="border_r border_b" colspan="5" align="right">${getFormattedAmount(totalDebit)}</td>
+                        <td class="border_r border_b" colspan="5" align="right">${getFormattedAmount(totalCredit)}</td>
+                    </tr>
+                </table>
+                <table style="width: 100%; margin-top: 15px; border: 1px solid black;">
+                    <tr>
+                        <td colspan="8">Prepared by:</td>
+                        <td colspan="8">Approved by:</td>
+                    </tr>
+                    <tr><td>&nbsp;</td></tr>
+                    <tr>
+                        <td colspan="8">${record.custbody_xrc_prepared_by?keep_after(" ")}</td>
+                        <td colspan="8">${record.custbody_xrc_approver1?keep_after(" ")}</td>
+                    </tr>
+                </table>
+                <table style="width: 100%; margin-top: 20px;">
+                    <tr>
+                        <td colspan="16">&nbsp;</td>
+                        <td colspan="8">
+                            <table style="width: 100%; padding: 10px; border: 1px solid black;">
+                                <tr>
+                                    <td><b>Received by:</b></td>
+                                </tr>
+                                <tr><td>&nbsp;</td></tr>
+                                <tr><td>&nbsp;</td></tr>
+                                <tr>
+                                    <td class="border_t" align="center">Signature over Printed Name</td>
+                                </tr>
+
+                            </table>
+                        </td>
+                    </tr>
+                </table>
+                <#function getFormattedAmount amount>
+                    <#assign integerPart=amount?int>
+                        <#assign decimalPart=amount - integerPart>
+                            <#if decimalPart==0>
+                                <#return "${amount?string(' ###,###,###,###.##')}.00">
+                            <#else>
+                                <#assign returnString="${amount?string('###,###,###,###.##')}" />
+                            <#if returnString?split(".")[1]?length==1>
+                                <#assign returnString=returnString + "0" />
+                            </#if>
+                                <#return returnString>
+                            </#if>
+                </#function>
+    </body>
+</pdf>

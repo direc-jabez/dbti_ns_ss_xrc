@@ -1,0 +1,136 @@
+<?xml version="1.0"?>
+<!DOCTYPE pdf PUBLIC "-//big.faceless.org//report" "report-1.1.dtd">
+<pdf>
+<head>
+	<link name="NotoSans" type="font" subtype="truetype" src="${nsfont.NotoSans_Regular}" src-bold="${nsfont.NotoSans_Bold}" src-italic="${nsfont.NotoSans_Italic}" src-bolditalic="${nsfont.NotoSans_BoldItalic}" bytes="2" />
+	<#if .locale == "zh_CN">
+		<link name="NotoSansCJKsc" type="font" subtype="opentype" src="${nsfont.NotoSansCJKsc_Regular}" src-bold="${nsfont.NotoSansCJKsc_Bold}" bytes="2" />
+	<#elseif .locale == "zh_TW">
+		<link name="NotoSansCJKtc" type="font" subtype="opentype" src="${nsfont.NotoSansCJKtc_Regular}" src-bold="${nsfont.NotoSansCJKtc_Bold}" bytes="2" />
+	<#elseif .locale == "ja_JP">
+		<link name="NotoSansCJKjp" type="font" subtype="opentype" src="${nsfont.NotoSansCJKjp_Regular}" src-bold="${nsfont.NotoSansCJKjp_Bold}" bytes="2" />
+	<#elseif .locale == "ko_KR">
+		<link name="NotoSansCJKkr" type="font" subtype="opentype" src="${nsfont.NotoSansCJKkr_Regular}" src-bold="${nsfont.NotoSansCJKkr_Bold}" bytes="2" />
+	<#elseif .locale == "th_TH">
+		<link name="NotoSansThai" type="font" subtype="opentype" src="${nsfont.NotoSansThai_Regular}" src-bold="${nsfont.NotoSansThai_Bold}" bytes="2" />
+	</#if>
+    <macrolist>
+        <macro id="nlheader">
+           <table class="header" style="width: 100%;">
+                    <tr>
+                        <td rowspan="2">
+                            <#if companyInformation.logoUrl?length !=0>
+                                <@filecabinet nstype="image" src="${companyInformation.logoUrl}"
+                                    style="float: left; margin: 7px; width: 280px; height: 100px;" />
+                            </#if>
+                        </td>
+                        <td align="right">
+                            <span class="title" style="font-size: 20px; font-weight: bold;">
+                                ${record@title}
+                            </span>
+                            <br />
+                            <span class="nameandaddress">${companyInformation.companyName}</span>
+                            <br />
+                            <span class="nameandaddress">${companyInformation.addressText}</span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td align="right">
+                            <br />
+                            ${record.trandate}
+                        </td>
+                    </tr>
+                </table>
+        </macro>
+        <macro id="nlfooter">
+            <table style="width: 100%; font-size: 8pt;">
+                <tr>
+                    <td style="padding: 0;">
+                        <barcode codetype="code128" showtext="true" value="${record.tranid}"/>
+                    </td>
+                    <td align="right" style="padding: 0;">
+                        <pagenumber/> of <totalpages/>
+                    </td>
+                </tr>
+            </table>
+        </macro>
+    </macrolist>
+    <style>
+		* {
+		<#if .locale == "zh_CN">
+			font-family: NotoSans, NotoSansCJKsc, sans-serif;
+		<#elseif .locale == "zh_TW">
+			font-family: NotoSans, NotoSansCJKtc, sans-serif;
+		<#elseif .locale == "ja_JP">
+			font-family: NotoSans, NotoSansCJKjp, sans-serif;
+		<#elseif .locale == "ko_KR">
+			font-family: NotoSans, NotoSansCJKkr, sans-serif;
+		<#elseif .locale == "th_TH">
+			font-family: NotoSans, NotoSansThai, sans-serif;
+		<#else>
+			font-family: NotoSans, sans-serif;
+		</#if>
+		}
+		table {
+			font-size: 9pt;
+			table-layout: fixed;
+		}
+        th {
+            font-weight: bold;
+            font-size: 8pt;
+            vertical-align: middle;
+            padding: 5px 6px 3px;
+            background-color: #e3e3e3;
+            color: #333333;
+        }
+        td {
+            padding: 4px 6px;
+        }
+		td p { align:left }
+    </style>
+</head>
+<body header="nlheader" header-height="15%" footer="nlfooter" footer-height="30pt" padding="0.5in 0.5in 0.5in 0.5in" size="Letter">
+<#if record.line?has_content>
+<table style="width: 100%; margin-top: 10px;">
+    <#assign total_credit = 0 />
+    <#assign total_debit = 0 />
+	<!-- start items -->
+	<#list record.line as line>
+		<#if line_index==0>
+			<thead>
+			<tr>
+				<th align="center" style="padding: 10px 6px;">${line.account@label}</th>
+				<th align="center" style="padding: 10px 6px;">${line.memo@label}</th>
+				<th align="center" style="padding: 10px 6px;">${line.location@label}</th>
+				<th align="center" style="padding: 10px 6px;">${line.credit@label}</th>
+				<th align="center" style="padding: 10px 6px;">${line.debit@label}</th>
+			</tr>
+			</thead>
+		</#if>
+        <#assign total_credit += line.credit />
+        <#assign total_debit += line.debit />
+		<tr>
+			<td align="center">${line.account}</td>
+			<td align="center">${line.memo}</td>
+			<td align="center">${line.location}</td>
+			<td align="center">${line.credit}</td>
+			<td align="center">${line.debit}</td>
+		</tr>
+    </#list>
+	<!-- end items -->
+</table>
+<table class="total" style="width: 100%; margin-top: 10px;">
+    <tr>
+        <td colspan="4"></td>
+        <th align="right">Total Debit</th>
+        <td align="right">${nsformat_currency(total_debit)}</td>
+    </tr>
+    <tr>
+        <td colspan="4"></td>
+        <th align="right">Total Credit</th>
+        <td align="right">${nsformat_currency(total_credit)}</td>
+    </tr>
+</table>
+</#if>
+</body>
+</pdf>

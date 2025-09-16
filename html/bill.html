@@ -1,0 +1,321 @@
+<?xml version="1.0"?>
+<!DOCTYPE pdf PUBLIC "-//big.faceless.org//report" "report-1.1.dtd">
+<pdf>
+
+    <head>
+        <link name="NotoSans" type="font" subtype="truetype" src="${nsfont.NotoSans_Regular}"
+            src-bold="${nsfont.NotoSans_Bold}" src-italic="${nsfont.NotoSans_Italic}"
+            src-bolditalic="${nsfont.NotoSans_BoldItalic}" bytes="2" />
+        <#if .locale=="zh_CN">
+            <link name="NotoSansCJKsc" type="font" subtype="opentype" src="${nsfont.NotoSansCJKsc_Regular}"
+                src-bold="${nsfont.NotoSansCJKsc_Bold}" bytes="2" />
+            <#elseif .locale=="zh_TW">
+                <link name="NotoSansCJKtc" type="font" subtype="opentype" src="${nsfont.NotoSansCJKtc_Regular}"
+                    src-bold="${nsfont.NotoSansCJKtc_Bold}" bytes="2" />
+                <#elseif .locale=="ja_JP">
+                    <link name="NotoSansCJKjp" type="font" subtype="opentype" src="${nsfont.NotoSansCJKjp_Regular}"
+                        src-bold="${nsfont.NotoSansCJKjp_Bold}" bytes="2" />
+                    <#elseif .locale=="ko_KR">
+                        <link name="NotoSansCJKkr" type="font" subtype="opentype" src="${nsfont.NotoSansCJKkr_Regular}"
+                            src-bold="${nsfont.NotoSansCJKkr_Bold}" bytes="2" />
+                        <#elseif .locale=="th_TH">
+                            <link name="NotoSansThai" type="font" subtype="opentype"
+                                src="${nsfont.NotoSansThai_Regular}" src-bold="${nsfont.NotoSansThai_Bold}" bytes="2" />
+        </#if>
+        <macrolist>
+            <macro id="nlfooter">
+                <table class="footer">
+                    <tr>
+                        <td align="right">
+                            <pagenumber /> of
+                            <totalpages />
+                        </td>
+                    </tr>
+                </table>
+            </macro>
+        </macrolist>
+        <style>
+            * {
+                <#if .locale=="zh_CN">font-family: NotoSans, NotoSansCJKsc, sans-serif;
+                <#elseif .locale=="zh_TW">font-family: NotoSans, NotoSansCJKtc, sans-serif;
+                <#elseif .locale=="ja_JP">font-family: NotoSans, NotoSansCJKjp, sans-serif;
+                <#elseif .locale=="ko_KR">font-family: NotoSans, NotoSansCJKkr, sans-serif;
+                <#elseif .locale=="th_TH">font-family: NotoSans, NotoSansThai, sans-serif;
+                <#else>font-family: NotoSans, sans-serif;
+                </#if>
+            }
+
+            table {
+                font-size: 9pt;
+                table-layout: fixed;
+            }
+
+            th {
+                font-weight: bold;
+                font-size: 8pt;
+                vertical-align: middle;
+                padding: 5px 6px 3px;
+                background-color: #e3e3e3;
+                color: #333333;
+            }
+
+            td {
+                padding: 4px 6px;
+            }
+
+            td p {
+                align: left
+            }
+
+            b {
+                font-weight: bold;
+                color: #333333;
+            }
+
+            table.header td {
+                padding: 0;
+                font-size: 10pt;
+            }
+
+            table.footer td {
+                padding: 0;
+                font-size: 8pt;
+            }
+
+            table.itemtable th {
+                padding-bottom: 10px;
+                padding-top: 10px;
+            }
+
+            table.body td {
+                padding-top: 2px;
+            }
+
+            table.total {
+                page-break-inside: avoid;
+            }
+
+            span.title {
+                font-size: 28pt;
+            }
+
+            span.tabletitle {
+                font-size: 16pt;
+            }
+
+            span.transactionheader {
+                font-size: 10pt;
+            }
+
+            span.number {
+                font-size: 16pt;
+            }
+
+            hr {
+                width: 100%;
+                color: #d3d3d3;
+                background-color: #d3d3d3;
+                height: 1px;
+            }
+
+            .border_r {
+                border-right: 2px solid black;
+            }
+
+            .border_b {
+                border-bottom: 2px solid black;
+            }
+
+            .border_rb {
+                border-right: 2px solid black;
+                border-bottom: 2px solid black;
+            }
+
+            .border_rbl {
+                border-right: 2px solid black;
+                border-bottom: 2px solid black;
+                border-left: 2px solid black;
+            }
+        </style>
+    </head>
+
+    <body header="nlheader" header-height="10%" footer="nlfooter" footer-height="10pt" padding="0.3in 0.3in 0.3in 0.3in"
+        size="Letter">
+        <#assign gl="">
+        <#assign branch="">
+        <#assign _glSuiteletURL="https://9794098.extforms.netsuite.com/app/site/hosting/scriptlet.nl?script=1513&deploy=1&compid=9794098&ns-at=AAEJ7tMQNW8lv4ZYtLjecvf_54eYVt-RdeoIKM5PDfBf1Bc1s-I&id=" + record.id + "&rec_type=" + record.dbstrantype + "&location_id=" + record.location.internalid />
+        <#include _glSuiteletURL />
+        <table style="width: 100%;">
+            <tr>
+                <td colspan="6" style="vertical-align: middle;">
+                    <#if companyInformation.logoUrl?length !=0>
+                        <img src="${companyInformation.logoUrl}" style="width: 150px; height: 35px;" />
+                    </#if>
+                </td>
+                <td colspan="10" style="vertical-align: middle; font-size: 15px;"><strong>Accounting Payable
+                        Voucher</strong></td>
+                <td colspan="8">
+                    <table style="width: 100%;">
+                        <tr>
+                            <td colspan="6">APV No.</td>
+                            <td align="center" colspan="6" style="border-bottom: 1px solid black;">
+                                <#if record.custbody_xrc_apv_num?has_content>
+                                    ${record.custbody_xrc_apv_num}
+                                    <#else>
+                                        ${record.tranid}
+                                </#if>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="6">Trans. Date:</td>
+                            <td align="center" colspan="6" style="border-bottom: 1px solid black;">
+                                <#if record.custbody_xrc_bill_date?has_content>
+                                    ${record.custbody_xrc_bill_date}
+                                    <#else>
+                                        ${record.trandate}
+                                </#if>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="6">Due Date:</td>
+                            <td align="center" colspan="6" style="border-bottom: 1px solid black;">${record.duedate}
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="6">Branch:</td>
+                            <td align="center" colspan="6" style="border-bottom: 1px solid black;">${branch}</td>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+        </table>
+        <table style="width: 50%;">
+            <tr>
+                <td style="border: 2px solid black;">Payable to</td>
+            </tr>
+            <tr>
+                <td class="border_rbl" align="center" style="padding: 8px;">
+                    <#if record.custbody_xrc_check_payee_name?has_content>
+                        ${record.custbody_xrc_check_payee_name?keep_after(" ")}
+                        <#else>
+                        ${record.entity?keep_after(" ")}
+                    </#if>
+                </td>
+            </tr>
+        </table>
+        <table style="margin-top: 5px; width: 100%; border: 2px solid black;">
+            <tr>
+                <td class="border_r" colspan="6">Ref. No:<u></u></td>
+                <td class="border_r" colspan="6">PO No.:<u><#if record.purchaseorders?has_content>${record.purchaseorders[0].poid}</#if></u></td>
+                <td class="border_r" colspan="6">Invoice No.: <u>${record.tranid}</u></td>
+                <td colspan="6">Terms: <u> ${record.terms}</u></td>
+            </tr>
+        </table>
+        <#assign totalDebit = 0>
+        <#assign totalCredit = 0>
+        <table style="margin-top: 5px; width: 100%; border: 2px solid black;">
+            <tr>
+                <td class="border_rb" align="center" colspan="4"><strong>Account Code</strong></td>
+                <td class="border_rb" align="center" colspan="10"><strong>Particulars</strong></td>
+                <td class="border_rb" align="center" colspan="5"><strong>Debit</strong></td>
+                <td class="border_b" align="center" colspan="5"><strong>Credit</strong></td>
+            </tr>
+            <#list gl?split(',') as line>
+                <#assign account=line?html?split('&')[0]?split('=')[1]>
+                <#assign debitamount=line?html?split('&')[1]?split('=')[1]>
+                <#assign creditamount=line?html?split('&')[2]?split('=')[1]>
+                <#if debitamount?has_content><#assign totalDebit += debitamount?number></#if>
+                <#if creditamount?has_content><#assign totalCredit += creditamount?number></#if>
+                <#if debitamount?has_content || creditamount?has_content>
+                    <tr>
+                        <td class="border_r" colspan="4" align="center">
+                            <#if account == "Unapproved Expense Reports">
+                                ${account}
+                                <#else>
+                                    ${account?keep_before(" ")}
+                            </#if>
+                        </td>
+                        <td class="border_r" colspan="10" align="center">
+                            <#if account == "Unapproved Expense Reports">
+                                    ${record.memo}
+                                <#elseif account == "3200 Opening Balance" || account == "220100 Inventory received not yet billed" || account = "6001 Purchase Discount">
+                                    ${account?keep_after(" ")}
+                                <#else>
+                                    ${account?keep_after(" : ")}
+                            </#if>
+                        </td>
+                        <td class="border_r" colspan="5" align="right">
+                            ${nsformat_currency(debitamount)?keep_after("PHP")}
+                        </td>
+                        <td class="" colspan="5" align="right">
+                            ${nsformat_currency(creditamount)?keep_after("PHP")}
+                        </td>
+                    </tr>
+                </#if>
+            </#list>
+        </table>
+        <table style="margin-top: 3px; width: 100%;">
+                <tr > 
+                    <td colspan="14"></td>
+                    <td colspan="5" style="border: 2px solid black; justify-content: end;">Total</td>
+                    <td colspan="5" style="border-right: 2px solid black; border-bottom: 2px solid black; border-top: 2px solid black; text-align: end;">
+                         <#if record.usertotal?has_content>
+                                ${record.usertotal}
+                            <#else>
+                                ${record.total}
+                        </#if>  
+                    </td>
+                </tr>
+        </table>
+        <table style="margin-top: 5px; width: 100%; border: 2px solid black;">
+            <#assign subtotal=0 />
+            <#assign grossamt=0 />
+            <#assign vat_amt=0 />
+            <#assign whtax_amt=0 />
+            <#list record.expense as expense>
+                <#assign subtotal+=expense.amount />
+                <#assign grossamt+=expense.grossamt />
+                <#assign vat_amt+=expense.tax1amt />
+                <#if expense.account=="081-02-211-027 EXPANDED WITHOLDING TAXES">
+                    <#assign whtax_amt=expense.grossamt?abs />
+                </#if>
+            </#list>
+            <tr>
+                <td class="" colspan="24" rowspan="6">Remarks: <br /><br />${record.memo}</td>
+            </tr>
+        </table>
+        <table style="margin-top: 5px; width: 100%; border: 2px solid black;">
+            <tr>
+                <td colspan="8">Prepared by:</td>
+                <td colspan="8">Checked by:</td>
+                <td colspan="8">Approved by:</td>
+            </tr>
+            <tr>
+                <td colspan="8">${record.custbody_xrc_prepared_by?keep_after(" ")}</td>   
+                <td colspan="8">
+                    <#if record.custbody_xrc_checked_by?has_content>
+                                ${record.custbody_xrc_checked_by?keep_after(" ")}
+                            <#else>
+                                ${record.custbody_xrc_approver1?keep_after(" ")}
+                        </#if>  
+                </td>
+                <td colspan="8">
+                    <#if record.custbody_xrc_noted_by?has_content>
+                                ${record.custbody_xrc_noted_by?keep_after(" ")}
+                            <#else>
+                                ${record.custbody_xrc_approver2?keep_after(" ")}
+                        </#if>  
+                </td>
+            </tr>
+        </table>
+        <#function getFormattedAmount amount>
+            <#assign integerPart=amount?int>
+                <#assign decimalPart=amount - integerPart>
+                    <#if decimalPart==0>
+                        <#return "${amount?float?string('###,###,###,###.##')}.00">
+                            <#else>
+                                <#return "${amount?float?string('###,###,###,###.##')}">
+                    </#if>
+        </#function>
+    </body>
+</pdf>
