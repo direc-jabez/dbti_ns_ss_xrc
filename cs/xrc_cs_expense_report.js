@@ -213,6 +213,34 @@ define(['N/record', 'N/currentRecord', 'N/url', 'N/search', 'N/runtime'],
 
                 }
 
+            } else if (fieldId === FUND_REQUEST_NUMBER_FIELD_ID) {
+
+                var exp_rep_category = currentRecord.getValue(EMPLOYEE_TRANSACTION_FIELD_ID);
+
+                if (exp_rep_category === TYPE_CASH_FUND_LIQUIDATION || exp_rep_category === TYPE_EMERGENCY_FUND_LIQUIDATION) {
+
+                    var fund_request = currentRecord.getValue(FUND_REQUEST_NUMBER_FIELD_ID);
+
+                    if (fund_request) {
+
+                        var fr_fieldLookUp = search.lookupFields({
+                            type: FUND_REQUEST_TYPE_ID,
+                            id: fund_request,
+                            columns: ['custrecord_xrc_balance', 'custrecord_xrc_transfer_account']
+                        });
+
+                        var balance = parseFloat(fr_fieldLookUp["custrecord_xrc_balance"]);
+
+                        var transfer_account = fr_fieldLookUp["custrecord_xrc_transfer_account"][0]?.value;
+
+                        currentRecord.setValue(ADVANCE_TO_APPLY_FIELD_ID, balance);
+
+                        currentRecord.setValue(ADVANCE_TO_APPLY_ACCOUNT_FIELD_ID, transfer_account);
+
+                    }
+
+                }
+
             }
 
             if (sublist_id === EXPENSE_SUBLIST_ID) {
@@ -336,9 +364,11 @@ define(['N/record', 'N/currentRecord', 'N/url', 'N/search', 'N/runtime'],
 
             currentRecord.setValue(PURPOSE_FIELD_ID, fr_rec.getValue(FR_PURPOSE_FIELD_ID));
 
+            var exp_rep_category = employee_tran_categ[fr_rec.getValue(FR_FUND_CATEGORY_FIELD_ID)];
+
             currentRecord.setValue({
                 fieldId: EMPLOYEE_TRANSACTION_FIELD_ID,
-                value: employee_tran_categ[fr_rec.getValue(FR_FUND_CATEGORY_FIELD_ID)],
+                value: exp_rep_category,
                 ignoreFieldChange: true,
             });
 
@@ -356,7 +386,15 @@ define(['N/record', 'N/currentRecord', 'N/url', 'N/search', 'N/runtime'],
 
             currentRecord.setValue(CLASS_FIELD_ID, fr_rec.getValue(FR_CLASS_FIELD_ID));
 
-            currentRecord.setValue(ADVANCE_TO_APPLY_FIELD_ID, fr_rec.getValue(FR_BALANCE_FIELD_ID));
+            if (exp_rep_category !== TYPE_CASH_FUND_LIQUIDATION || exp_rep_category !== TYPE_EMERGENCY_FUND_LIQUIDATION) {
+
+                currentRecord.setValue(ADVANCE_TO_APPLY_FIELD_ID, fr_rec.getValue(FR_BALANCE_FIELD_ID));
+
+            } else {
+
+                currentRecord.setValue(ADVANCE_TO_APPLY_FIELD_ID, 0);
+
+            }
 
             // Setting expenses sublist field
 
