@@ -144,18 +144,32 @@ define(['N/record', 'N/runtime'],
 
                 if (lease_proposal_id) {
 
+                    log.debug('lease_proposal_id', lease_proposal_id);
+
                     // Link the Initial SOA on Estimate on save
                     record.submitFields({
                         type: record.Type.ESTIMATE,
                         id: lease_proposal_id,
                         values: {
                             [INITIAL_SOA_FIELD_ID]: newRecord.id,
-                            ["custrecord_xrc_isoa_unpaid_bal"]: newRecord.getValue("custrecord_total_amount_due"),
                         },
                         options: {
                             ignoreMandatoryFields: true
                         }
                     });
+
+                    record.submitFields({
+                        type: newRecord.type,
+                        id: newRecord.id,
+                        values: {
+                            "custrecord_xrc_isoa_unpaid_bal": newRecord.getValue("custrecord_total_amount_due"),
+                        },
+                        options: {
+                            ignoreMandatoryFields: true
+                        }
+                    });
+
+
 
                 }
 

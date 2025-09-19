@@ -212,7 +212,7 @@
                         </#if>
                         ${contact_person}
                     </td>
-                    <td colspan="12" align="right" style="padding-bottom: 0;">${record.trandate}</td>
+                    <td colspan="12" align="right" style="padding-bottom: 0;">${record.trandate?string.long}</td>
                 </tr>
                 <tr>
                     <td colspan="12" align="left" style="padding-bottom: 0; padding-top: 0; font-weight: bold;">${record.custbody_xrc_lp_job_title}</td>
@@ -234,7 +234,7 @@
                 <tr>
                     <td>We are pleased to offer you a space at <b>${record.location?upper_case}</b> for <b>${customerLegalName}</b>
                         , under the Basic Lease Terms (BLT) stipulated
-                        below. Enclosed are the vicinity map and location plan for you reference.
+                        below. Enclosed are the vicinity map and location plan for your reference.
                     </td>
                 </tr>
             </table>
@@ -287,13 +287,13 @@
                     <td class="border_r border_b" colspan="8"><b>Lease Commencement</b></td>
                     <td class="border_b" colspan="16"><b>
                             <#if record.custbody_xrc_lease_commencement?has_content>
-                                ${record.custbody_xrc_lease_commencement}<#else>To be determined</#if>
+                                ${record.custbody_xrc_lease_commencement?string.long} or first day of operation whichever comes first<#else>To be determined</#if>
                         </b></td>
                 </tr>
                 <tr>
                     <td class="border_r border_b" colspan="8"><b>Lease Expiry</b></td>
                     <td class="border_b" colspan="16"><b>
-                            <#if record.custbody_xrc_lease_expiry?has_content>${record.custbody_xrc_lease_expiry}<#else>
+                            <#if record.custbody_xrc_lease_expiry?has_content>${record.custbody_xrc_lease_expiry?string.long}<#else>
                                     To be determined</#if>
                         </b></td>
                 </tr>
@@ -312,7 +312,7 @@
                             <#if record.custbody_xrc_lease_type != "Basic Rental Rate/month" && record.custbody_xrc_percentage_rate?length gt 0>
                                 ${record.custbody_xrc_percent_sales_descr}
                                 <#else>
-                                    Not applicable
+                                    Not Applicable
                             </#if>
                         </b>
                     </td>
@@ -333,7 +333,11 @@
                                 <td width="50%">
                                     <b style="font-size: 9px;">
                                         <#if record.custbody_xrc_lease_period_type == "One-time">
-                                                ${addSpaceAfterPHP(record.custbody_xrc_cusa)} for the whole duration
+                                                <#if record.custbody_xrc_cusa?string != "">
+                                                    ${addSpaceAfterPHP(record.custbody_xrc_cusa)} for the whole duration
+                                                    <#else>
+                                                        Not Applicable
+                                                    </#if>
                                             <#else>
                                                 ${addSpaceAfterPHP(record.custbody_xrc_cusa)} per month
                                         </#if>
@@ -345,7 +349,7 @@
                 </tr>
                 <tr>
                     <td class="border_r border_b" colspan="8">&nbsp;</td>
-                    <td class="border_b" colspan="16"><b>CUSA charges will start on first day of construction</b></td>
+                    <td class="border_b" colspan="16"><b><#if record.custbody_xrc_property_class == "Inline">CUSA charges will start on first day of construction</#if></b></td>
                 </tr>
                 <tr>
                     <td class="border_r border_b" colspan="8"><b>CUSA Escalation per Annum</b></td>
@@ -453,7 +457,7 @@
                 </tr>
                 <tr>
                     <td class="border_r border_b" colspan="8"><b>Security Deposit</b></td>
-                    <td class="border_b" colspan="16"><b>${addSpaceAfterPHP(record.custbody_xrc_security_deposit)}</b></td>
+                    <td class="border_b" colspan="16"><b>${record.custbody_xrc_security_deposit}</b></td>
                 </tr>
                 <tr>
                     <td class="border_r border_b" colspan="8">&nbsp;</td>
@@ -461,7 +465,7 @@
                 </tr>
                 <tr>
                     <td class="border_r border_b" colspan="8"><b>Advance Rent</b></td>
-                    <td class="border_b" colspan="16"><b>${addSpaceAfterPHP(record.custbody_xrc_advance_rent)}</b></td>
+                    <td class="border_b" colspan="16"><b>${record.custbody_xrc_advance_rent}</b></td>
                 </tr>
                 <tr>
                     <td class="border_r border_b" colspan="8">&nbsp;</td>
@@ -469,7 +473,7 @@
                 </tr>
                 <tr>
                     <td class="border_r border_b" colspan="8"><b>Construction Bond</b></td>
-                    <td class="border_b" colspan="16"><b>${addSpaceAfterPHP(record.custbody_xrc_construction_bond)}</b></td>
+                    <td class="border_b" colspan="16"><b>${record.custbody_xrc_construction_bond}</b></td>
                 </tr>
                 <tr>
                     <td class="border_r border_b" colspan="8">&nbsp;</td>
@@ -478,30 +482,30 @@
                 <tr>
                     <td class="border_r border_b" colspan="8"><b>Marketing Support Fund</b></td>
                     <td class="border_b" colspan="16"><b>
-                            <#if record.custbody_xrc_mktg_supp_fund?length gt 0>${addSpaceAfterPHP(record.custbody_xrc_mktg_supp_fund)} per Annum
-                                <#else>Not applicable</#if>
+                            <#if record.custbody_xrc_mktg_supp_fund?length gt 0>${record.custbody_xrc_mktg_supp_fund} per Annum
+                                <#else>Not Applicable</#if>
                         </b></td>
                 </tr>
                 <tr>
-                    <td class="border_r border_b" colspan="8"><b>Electrical Bill Deposit</b></td>
+                    <td class="border_r border_b" colspan="8"><b>Electric Bill Deposit</b></td>
                     <td class="border_b" colspan="16"><b>
                             <#if record.custbody_xrc_electric_bill_dep?length gt 0>
-                                ${addSpaceAfterPHP(record.custbody_xrc_electric_bill_dep)}<#else>Not applicable</#if>
+                                ${record.custbody_xrc_electric_bill_dep}<#else>Not Applicable</#if>
                         </b></td>
                 </tr>
                 <tr>
-                    <td class="border_r border_b" colspan="8"><b>Electrical Meter Deposit</b></td>
+                    <td class="border_r border_b" colspan="8"><b>Electric Meter Deposit</b></td>
                     <td class="border_b" colspan="16"><b>
-                            <#if record.custbody_xrc_elec_meter_dep?length gt 0>${addSpaceAfterPHP(record.custbody_xrc_elec_meter_dep)}
-                                <#else>Not applicable</#if>
+                            <#if record.custbody_xrc_elec_meter_dep?length gt 0>${record.custbody_xrc_elec_meter_dep}
+                                <#else>Not Applicable</#if>
                         </b></td>
                 </tr>
                 <tr>
                     <td class="border_r border_b" colspan="8"><b>Water Bill Deposit</b></td>
                     <td class="border_b" colspan="16">
                         <b>
-                            <#if record.custbody_xrc_water_bill_dep?length gt 0>${addSpaceAfterPHP(record.custbody_xrc_water_bill_dep)}
-                                <#else>Not applicable</#if>
+                            <#if record.custbody_xrc_water_bill_dep?length gt 0>${record.custbody_xrc_water_bill_dep}
+                                <#else>Not Applicable</#if>
                         </b>
                     </td>
                 </tr>
@@ -509,23 +513,23 @@
                     <td class="border_r border_b" colspan="8"><b>Water Meter Deposit</b></td>
                     <td class="border_b" colspan="16">
                         <b>
-                            <#if record.custbody_xrc_water_meter_dep?length gt 0>${addSpaceAfterPHP(record.custbody_xrc_water_meter_dep)}
-                                <#else>Not applicable</#if>
+                            <#if record.custbody_xrc_water_meter_dep?length gt 0>${record.custbody_xrc_water_meter_dep}
+                                <#else>Not Applicable</#if>
                         </b>
                     </td>
                 </tr>
                 <tr>
                     <td class="border_r border_b" colspan="8"><b>LPG Bill Deposit</b></td>
                     <td class="border_b" colspan="16"><b>
-                            <#if record.custbody_xrc_lpg_bill_dep?length gt 0>${addSpaceAfterPHP(record.custbody_xrc_lpg_bill_dep)}<#else>
-                                    Not applicable</#if>
+                            <#if record.custbody_xrc_lpg_bill_dep?length gt 0>${record.custbody_xrc_lpg_bill_dep}<#else>
+                                    Not Applicable</#if>
                         </b></td>
                 </tr>
                 <tr>
                     <td class="border_r" colspan="8"><b>LPG Meter Deposit</b></td>
                     <td colspan="16"><b>
-                            <#if record.custbody_xrc_lpg_meter_dep?length gt 0>${addSpaceAfterPHP(record.custbody_xrc_lpg_meter_dep)}
-                                <#else>Not applicable</#if>
+                            <#if record.custbody_xrc_lpg_meter_dep?length gt 0>${record.custbody_xrc_lpg_meter_dep}
+                                <#else>Not Applicable</#if>
                         </b></td>
                 </tr>
             </table>
@@ -636,7 +640,7 @@
                         </b>.
                         The parties' contractual relationship shall be governed by this BLT and/or the Contract of Lease
                         which the parties will execute. Please feel free to call the undersigned at
-                        <b>${phone}</b> if have any questions regarding this BLT or if you wish to conduct an
+                        <b>${phone}</b> if you have any questions regarding this BLT or if you wish to conduct an
                         ocular inspection of the area. <br /><br />
                         We look forward to a long and fruitful business relation with you. Thank you.
                     </td>

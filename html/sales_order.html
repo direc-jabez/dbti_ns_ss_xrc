@@ -92,7 +92,7 @@
             }
 
             table {
-                font-size: 9pt;
+                font-size: 12pt;
                 table-layout: fixed;
             }
 
@@ -232,11 +232,11 @@
                     <td style="border: .5px solid #000; border-collapse: collapse;" align="center">
                         <strong>
                             <#if rent?index == 0>
-                                    ${record.custbody_xrc_lease_commencement?string("MMMM dd, yyyy")} - ${rent?split('/*/')[0]?keep_after(" - ")}
+                                    ${record.custbody_xrc_lease_commencement?string("MMMM d, yyyy")} - ${rent?split('/*/')[0]?keep_after(" - ")}
                                 <#else>
                                 <#assign dateString = rent?split('/*/')[0]>
-                                <#assign givenDate = dateString?date("MMMM dd, yyyy")>
-                                <#assign firstDayOfMonth = givenDate?string("MMMM dd, yyyy")>
+                                <#assign givenDate = dateString?date("MMMM d, yyyy")>
+                                <#assign firstDayOfMonth = givenDate?string("MMMM d, yyyy")>
                                 ${firstDayOfMonth} - ${dateString?keep_after(" - ")}
                             </#if>
                         </strong>
@@ -252,7 +252,7 @@
                         <#if record.custbody_xrc_lease_type != "Basic Rental Rate/month" && record.custbody_xrc_percentage_rate?length gt 0>
                             ${record.custbody_xrc_percent_sales_descr}
                             <#else>
-                                Not applicable
+                                Not Applicable
                         </#if>
                     </b>
                 </td>
@@ -280,11 +280,11 @@
                     <td style="border: .5px solid #000; border-collapse: collapse;" align="center">
                         <strong>
                             <#if rent?index == 0>
-                                    ${record.custbody_xrc_lease_commencement?string("MMMM dd, yyyy")} - ${rent?split('/*/')[0]?keep_after(" - ")}
+                                    ${record.custbody_xrc_lease_commencement?string("MMMM d, yyyy")} - ${rent?split('/*/')[0]?keep_after(" - ")}
                                 <#else>
                                     <#assign dateString = rent?split('/*/')[0]>
-                                    <#assign givenDate = dateString?date("MMMM dd, yyyy")>
-                                    <#assign firstDayOfMonth = givenDate?string("MMMM dd, yyyy")>
+                                    <#assign givenDate = dateString?date("MMMM d, yyyy")>
+                                    <#assign firstDayOfMonth = givenDate?string("MMMM d, yyyy")>
                                     ${firstDayOfMonth} - ${dateString?keep_after(" - ")}
 
                             </#if>
@@ -302,7 +302,7 @@
                 <td><strong>AIR-CON/MAINTENANCE CHARGES</strong></td>
                 <td>
                     <strong>
-                        <#if record.custbody_xrc_aircon == "to be charged by the Lessor">
+                        <#if record.custbody_xrc_aircon == "To be charged by the Lessor">
                             ${record.custbody_xrc_aircon_charge} per month
                             <#else>
                             ${record.custbody_xrc_aircon}
@@ -314,7 +314,7 @@
                 <td><strong>FEEDERLINE</strong></td>
                 <td>
                     <strong>
-                        <#if record.custbody_xrc_feederline_sprinkler == "to be charged by the Lessor">
+                        <#if record.custbody_xrc_feederline_sprinkler == "To be charged by the Lessor">
                             ${record.custbody_xrc_feederline_charges} per month
                             <#else>
                             ${record.custbody_xrc_feederline_sprinkler}
@@ -326,7 +326,7 @@
                 <td><strong>SPRINKLER SYSTEM</strong></td>
                 <td>
                     <strong>
-                        <#if record.custbody_xrc_sprinkler_system == "to be charged by the Lessor">
+                        <#if record.custbody_xrc_sprinkler_system == "To be charged by the Lessor">
                             ${record.custbody_xrc_sprinkler_system_charges} per month
                             <#else>
                             ${record.custbody_xrc_sprinkler_system}
@@ -396,7 +396,7 @@
                     <strong>
                         <#if record.custbody_xrc_advance_rent?string != ''>
                             ${addSpaceAfterPHP(record.custbody_xrc_advance_rent)}<br />
-                            <strong><span style="font-size: 10px; font-style: italic;">${record.custbody_xrc_adv_rent_descript}</span></strong>
+                            <strong><span style="font-size: 14px; font-style: italic;">${record.custbody_xrc_adv_rent_descript}</span></strong>
                         <#else>
                             Not Applicable
                         </#if>
@@ -405,7 +405,7 @@
             </tr>
             <tr>
                 <td><strong>SECURITY DEPOSIT</strong></td>
-                <td><strong><span style="font-size: 10px; font-style: italic;">${record.custbody_xrc_sec_dep_description}</span></strong></td>
+                <td><strong><span style="font-size: 14px; font-style: italic;">${record.custbody_xrc_sec_dep_description}</span></strong></td>
             </tr>
         </table>
         
@@ -420,12 +420,12 @@
                     <td style="border: .5px solid #000; border-collapse: collapse;" align="center">
                         <strong>
                             <#if rent?index == 0>
-                                    ${record.custbody_xrc_lease_commencement?string("MMMM dd, yyyy")} - ${rent?split('/*/')[0]?keep_after(" - ")}
+                                    ${record.custbody_xrc_lease_commencement?string("MMMM d, yyyy")} - ${rent?split('/*/')[0]?keep_after(" - ")}
                                 <#else>
                                     <#assign dateString = rent?split('/*/')[0]>
-                                    <#assign givenDate = dateString?date("MMMM dd, yyyy")>
+                                    <#assign givenDate = dateString?date("MMMM d, yyyy")>
                                     <#assign firstDayOfMonth = givenDate>
-                                    ${firstDayOfMonth?string("MMMM dd, yyyy")} - ${dateString?keep_after(" - ")}
+                                    ${firstDayOfMonth?string("MMMM d, yyyy")} - ${dateString?keep_after(" - ")}
                             </#if>
                         </strong>
                     </td>
@@ -452,9 +452,9 @@
                 <td><strong>
                     <#if record.custbody_xrc_lease_commencement?has_content>
                         <#if record.custbody_xrc_contract_type == "Renewal">
-                                ${record.custbody_xrc_lease_commencement?string("MMMM dd, yyyy")}
+                                ${record.custbody_xrc_lease_commencement?string("MMMM d, yyyy")}
                             <#else>
-                                ${record.custbody_xrc_lease_commencement?string("MMMM dd, yyyy")} or first day of operation whichever comes first
+                                ${record.custbody_xrc_lease_commencement?string("MMMM d, yyyy")} or first day of operation whichever comes first
                         </#if>
                         <#else>
                             Not Applicable

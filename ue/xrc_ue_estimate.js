@@ -142,7 +142,22 @@ define(['N/search', 'N/ui/serverWidget', 'N/record', 'N/runtime'],
 
                             var status = newRecord.getValue('status');
 
+                            log.debug('status', status);
+
                             var links_lines = newRecord.getLineCount({ sublistId: LINKS_SUBLSIT_ID });
+
+                            var has_so_not_cancelled = isSalesOrderCancelled();
+
+                            if (!has_so_not_cancelled) {
+
+                                // Then, show Lease Memorandum button
+                                form.addButton({
+                                    id: 'custpage_initial_soa',
+                                    label: 'Lease Memorandum',
+                                    functionName: 'onLeaseMemorandumBtnClick()',
+                                });
+
+                            }
 
                             if (initial_soa && links_lines < 1) { //  && status !== STATUS_PROCESSED
 
@@ -517,6 +532,38 @@ define(['N/search', 'N/ui/serverWidget', 'N/record', 'N/runtime'],
             var total_payment = parseFloat(fieldLookUp[ISOA_TOTAL_PAYMENT_AMOUNT_FIELD_ID]);
 
             return total_payment > 0;
+        }
+
+        function isSalesOrderCancelled() {
+
+            var has_so_not_cancelled = false;
+
+            var sales_order_search = search.create({
+                type: "salesorder",
+                settings: [{ "name": "consolidationtype", "value": "ACCTTYPE" }, { "name": "includeperiodendtransactions", "value": "F" }],
+                filters:
+                    [
+                        ["type", "anyof", "SalesOrd"],
+                        "AND",
+                        ["mainline", "is", "T"],
+                        "AND",
+                        ["createdfrom", "anyof", "39926"]
+                    ],
+                columns:
+                    [
+                        search.createColumn({ name: "statusref", label: "Status" })
+                    ]
+            });
+
+            sales_order_search.run().each(function (result) {
+                var status = result.getValue("statusref");
+                if (status !== "closed" && status !== "cancelled") {
+                    has_so_not_cancelled = true;
+                }
+                return true;
+            });
+
+            return has_so_not_cancelled;
         }
 
 

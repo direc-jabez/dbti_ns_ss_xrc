@@ -260,8 +260,6 @@ define(['N/record', 'N/ui/serverWidget', 'N/search', 'N/runtime'],
                             payment: payment,
                         });
 
-                        // if (approval_status === STATUS_APPROVED) {
-
                         var new_balance_due = parseFloat(balance_due) - parseFloat(payment);
 
                         // Updating the Advance Charge record
@@ -276,7 +274,7 @@ define(['N/record', 'N/ui/serverWidget', 'N/search', 'N/runtime'],
                             }
                         });
 
-                        // }
+
                     }
                 }
 
@@ -290,6 +288,58 @@ define(['N/record', 'N/ui/serverWidget', 'N/search', 'N/runtime'],
                         ignoreMandatoryFields: true
                     }
                 });
+
+                if (approval_status === REJECTED_STATUS_ID) {
+
+                    var isoa_rec = record.load({
+                        type: INITIAL_SOA_RECORD_TYPE_ID,
+                        id: isoa_id
+                    });
+
+                    var ac_lines = isoa_rec.getLineCount({ sublistId: "recmachcustrecord_xrc_initial_soa_num" });
+
+                    var historical_values = JSON.parse(newRecord.getValue("custrecord_xrc_isoa_dep_historical_vals"));
+
+                    for (var line = 0; line < historical_values.length; line++) {
+
+                        var id = historical_values[line].id;
+
+                        for (var ac_line = 0; ac_line < ac_lines; ac_line++) {
+
+                            var isoa_ac_id = isoa_rec.getSublistValue({
+                                sublistId: "recmachcustrecord_xrc_initial_soa_num",
+                                fieldId: "id",
+                                line: ac_line,
+                            });
+
+                            if (id === isoa_ac_id) {
+
+                                var payment = historical_values[line].payment;
+
+                                var isoa_balance_due = isoa_rec.getSublistValue({
+                                    sublistId: "recmachcustrecord_xrc_initial_soa_num",
+                                    fieldId: "custrecord_xrc_balance_due",
+                                    line: ac_line,
+                                });
+
+                                record.submitFields({
+                                    type: ADVANCE_CHARGE_RECORD_TYPE_ID,
+                                    id: id,
+                                    values: {
+                                        [AC_BALANCE_DUE_FIELD_ID]: parseFloat(isoa_balance_due) + parseFloat(payment),
+                                    },
+                                    options: {
+                                        ignoreMandatoryFields: true
+                                    }
+                                });
+
+                            }
+
+                        }
+
+                    }
+
+                }
 
 
                 // if (approval_status === STATUS_APPROVED) {
@@ -386,6 +436,8 @@ define(['N/record', 'N/ui/serverWidget', 'N/search', 'N/runtime'],
         }
 
         function buildApplySublist(newRecord, form, origin_id, mode) {
+
+            var approval_status = newRecord.getValue(APPROVAL_STATUS_FIELD_ID);
 
             var for_approval = newRecord.getValue(FOR_APPROVAL_FIELD_ID);
 
@@ -490,12 +542,6 @@ define(['N/record', 'N/ui/serverWidget', 'N/search', 'N/runtime'],
             // Setting the values from the referenced Initial SOA document
             ac_search.run().each(function (result) {
 
-                var payment = JSON.parse(historical_values)[line].payment;
-
-                if (mode === 'view' && parseFloat(payment)) {
-                    log.debug('payment', payment);
-                }
-
                 apply_sublist.setSublistValue({
                     id: 'custpage_id',
                     value: result.id,
@@ -570,34 +616,38 @@ define(['N/record', 'N/ui/serverWidget', 'N/search', 'N/runtime'],
 
                 line = 0;
 
-                // Setting values from historical values
-                JSON.parse(historical_values).forEach(value => {
+                if (approval_status !== REJECTED_STATUS_ID) {
 
-                    if (value.balance_due) {
+                    // Setting values from historical values
+                    JSON.parse(historical_values).forEach(value => {
 
-                        apply_sublist.setSublistValue({
-                            id: 'custpage_balance_due',
-                            value: value.balance_due,
-                            line: line,
-                        });
+                        if (value.balance_due) {
 
-                    }
+                            apply_sublist.setSublistValue({
+                                id: 'custpage_balance_due',
+                                value: value.balance_due,
+                                line: line,
+                            });
 
-                    if (value.payment) {
+                        }
 
-                        apply_sublist.setSublistValue({
-                            id: 'custpage_payment',
-                            value: value.payment,
-                            line: line,
-                        });
+                        if (value.payment) {
 
-                        total_payment += parseFloat(value.payment);
+                            apply_sublist.setSublistValue({
+                                id: 'custpage_payment',
+                                value: value.payment,
+                                line: line,
+                            });
 
-                    }
+                            total_payment += parseFloat(value.payment);
 
-                    line += 1;
+                        }
 
-                });
+                        line += 1;
+
+                    });
+                    
+                }
 
             }
 
